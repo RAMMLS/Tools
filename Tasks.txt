@@ -11,7 +11,7 @@ Level 1 	Basic 	Example
 [7] 	ROT13 Cipher 	✔️
 [8] 	UDP Chat server -> The messages should be encoded with ROT13 Cipher 	✔️
 [9] 	Remote command execution 	✔️
-[10] 	Recreate the Netcat tool 	❌
+[10] 	Recreate the Netcat tool 	✔️
 ############################################################################
 Level 2 	Essential 	Example
 ############################################################################
