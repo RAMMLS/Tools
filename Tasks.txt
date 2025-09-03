@@ -20,7 +20,7 @@ Level 2 	Essential 	Example
 [13] 	Port scanner with port footprint (HTTP? DNS? FTP? IRC?) 	✔️
 [14] 	Simple Web Directory brute-forcer (Threaded) 	✔️
 [15] 	Recursive Web Directory brute-forcer (Threaded peer recursion) 	✔️
-[16] 	Web Login bruteforce tool 	❌
+[16] 	Web Login bruteforce tool 	✔️
 [17] 	FTP Login bruteforce tool 	❌
 [18] 	SSH Login bruteforce tool 	❌
 [19] 	FTP User footprint 	❌
