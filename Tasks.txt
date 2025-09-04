@@ -22,7 +22,7 @@ Level 2 	Essential 	Example
 [15] 	Recursive Web Directory brute-forcer (Threaded peer recursion) 	✔️
 [16] 	Web Login bruteforce tool 	✔️
 [17] 	FTP Login bruteforce tool 	✔️
-[18] 	SSH Login bruteforce tool 	❌
+[18] 	SSH Login bruteforce tool 	✔️
 [19] 	FTP User footprint 	❌
 [20] 	MYSQL User footprint 	❌
 [21] 	Simple Google Bot for web scan 	❌
