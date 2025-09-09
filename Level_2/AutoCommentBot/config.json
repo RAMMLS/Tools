@@ -1,0 +1,31 @@
+{
+  "BotConfig": {
+    "websiteUrl": "http://example.com/blog/article1",
+    "commentSelector": "#comment-text",
+    "submitButtonSelector": "#submit-comment",
+    "comments": [
+      { "text": "Great article!" },
+      { "text": "I found this very helpful." },
+      { "text": "Thanks for sharing!" }
+    ],
+    "userProfiles": [
+      {
+        "username": "user1",
+        "password": "password1",
+        "email": "user1@example.com",
+        "name": "John Doe"
+      },
+      {
+        "username": "user2",
+        "password": "password2",
+        "email": "user2@example.com",
+        "name": "Jane Smith"
+      }
+    ],
+    "delayBetweenCommentsSeconds": 10,
+    "useRandomDelays": true,
+    "maxRandomDelaySeconds": 30,
+    "headlessMode": true
+  }
+}
+
