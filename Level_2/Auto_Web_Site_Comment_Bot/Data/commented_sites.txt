@@ -1,0 +1,2 @@
+https://example.com/blog/article1
+https://another-example.com/news/page2

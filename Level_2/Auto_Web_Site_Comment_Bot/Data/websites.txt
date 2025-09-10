@@ -1,0 +1,4 @@
+https://example.com/blog/article1
+https://another-example.com/news/page2
+https://some-forum.org/thread/12345
+
