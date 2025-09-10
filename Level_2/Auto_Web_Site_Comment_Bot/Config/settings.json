@@ -1,0 +1,13 @@
+{
+  "Threads": 5,                  // Количество потоков
+  "CommentDelayMin": 10,          // Минимальная задержка между комментариями (секунды)
+  "CommentDelayMax": 30,          // Максимальная задержка между комментариями (секунды)
+  "MaxCommentAttempts": 3,       // Максимальное количество попыток отправить комментарий
+  "EnableProxy": false,            // Использовать прокси?
+  "SolveCaptcha": false,           // Решать капчу?
+  "CaptchaService": "2Captcha",   // Сервис для решения капчи (например, "2Captcha")
+  "CaptchaApiKey": "YOUR_API_KEY",// API ключ для сервиса капчи
+  "WebsiteTimeout": 15,           // Таймаут запроса к сайту (секунды)
+  "HeadlessBrowser": true       // Использовать headless браузер (например, Selenium)
+}
+
