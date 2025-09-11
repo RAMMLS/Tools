@@ -1,0 +1,5 @@
+{
+  "DataPattern": "<div class=\"data\">(.*?)</div>",
+  "TitlePattern": "<h1>(.*?)</h1>"
+}
+

@@ -1,0 +1,10 @@
+
+{
+  "WebsiteUrl": "https://www.example.com",
+  "DataPattern": "<div class=\"data\">(.*?)</div>", // Пример Regex паттерна
+  "TitlePattern": "<h1>(.*?)</h1>", // Пример Regex паттерна
+  "EnableLogging": true,
+  "MaxRetries": 3,             // Максимальное количество попыток при ошибке запроса
+  "RetryDelayMilliseconds": 1000 // Задержка между попытками
+}
+
