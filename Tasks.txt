@@ -32,7 +32,7 @@ Level 2 	Essential 	Example
 [25] 	Bot to collect information about someone using Google / Bing / Yahoo! 	✔️
 [26] 	Simple SQLi tester 	✔️
 [27] 	Simple XSS tester 	✔️
-[28] 	Simple Wordpress brute-forcer 	❌
+[28] 	Simple Wordpress brute-forcer 	✔️
 [29] 	SQLi database retriever 	❌
 [30] 	Spam creator 	❌
 ############################################################################
