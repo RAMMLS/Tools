@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SQLi Training App</title>
+    <link rel="stylesheet" href="~/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>SQL Injection Training Application</h1>
+        <p class="subtitle">Учебное приложение для демонстрации SQL-инъекций</p>
+        
+        <div class="section">
+            <h2>Демонстрация аутентификации</h2>
+            
+            <div class="vulnerable-form">
+                <h3>Уязвимая форма входа</h3>
+                <form method="post" action="/Training/Login">
+                    <div class="form-group">
+                        <label>Имя пользователя:</label>
+                        <input type="text" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Пароль:</label>
+                        <input type="password" name="password" required>
+                    </div>
+                    <button type="submit">Войти (уязвимый метод)</button>
+                </form>
+            </div>
+            
+            <div class="safe-form">
+                <h3>Безопасная форма входа</h3>
+                <form method="post" action="/Training/Login">
+                    <input type="hidden" name="useSafeMethod" value="true">
+                    <div class="form-group">
+                        <label>Имя пользователя:</label>
+                        <input type="text" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Пароль:</label>
+                        <input type="password" name="password" required>
+                    </div>
+                    <button type="submit">Войти (безопасный метод)</button>
+                </form>
+            </div>
+            
+            @if (ViewBag.Success != null)
+            {
+                <div class="alert success">
+                    <strong>Успех!</strong> @ViewBag.Success
+                    <br><small>@ViewBag.Message</small>
+                </div>
+            }
+            
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert error">
+                    <strong>Ошибка!</strong> @ViewBag.Error
+                    <br><small>@ViewBag.Message</small>
+                </div>
+            }
+        </div>
+        
+        <div class="section">
+            <h2>Демонстрация поиска с уязвимостью</h2>
+            <form method="post" action="/Training/Search">
+                <div class="form-group">
+                    <label>Поиск пользователей:</label>
+                    <input type="text" name="searchTerm" placeholder="Введите условие поиска" required>
+                </div>
+                <button type="submit">Поиск (уязвимый метод)</button>
+            </form>
+            
+            @if (ViewBag.SearchResults != null)
+            {
+                <h3>Результаты поиска для "@ViewBag.SearchTerm":</h3>
+                <table>
+                    <tr>
+                        <th>ID</th>
+                        <th>Имя пользователя</th>
+                        <th>Email</th>
+                        <th>Роль</th>
+                    </tr>
+                    @foreach (var user in ViewBag.SearchResults)
+                    {
+                        <tr>
+                            <td>@user.Id</td>
+                            <td>@user.Username</td>
+                            <td>@user.Email</td>
+                            <td>@user.Role</td>
+                        </tr>
+                    }
+                </table>
+                
+                <div class="hint">
+                    <strong>Подсказка:</strong> Попробуйте ввести: <code>' OR '1'='1</code> чтобы получить всех пользователей
+                </div>
+            }
+        </div>
+        
+        <div class="section">
+            <h2>Управление базой данных</h2>
+            <form method="post" action="/Training/ResetDatabase">
+                <button type="submit" class="warning">Сбросить базу данных</button>
+            </form>
+        </div>
+        
+        <div class="section instructions">
+            <h2>Инструкция по использованию</h2>
+            <ol>
+                <li>Попробуйте войти с учетными данными: admin/admin123</li>
+                <li>Попробуйте SQL-инъекцию в поле пользователя: <code>' OR '1'='1</code> с любым паролем</li>
+                <li>Сравните результаты уязвимого и безопасного методов</li>
+                <li>Экспериментируйте с поиском, используя различные SQL-инъекции</li>
+            </ol>
+            
+            <h3>Примеры SQL-инъекций:</h3>
+            <ul>
+                <li><code>' OR '1'='1</code> - обход аутентификации</li>
+                <li><code>'; DROP TABLE Users; --</code> - удаление таблицы (заблокировано в этом приложении)</li>
+                <li><code>' UNION SELECT null, username, password, null FROM Users --</code> - получение дополнительных данных</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
