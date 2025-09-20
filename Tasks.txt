@@ -34,7 +34,7 @@ Level 2 	Essential 	Example
 [27] 	Simple XSS tester 	✔️
 [28] 	Simple Wordpress brute-forcer 	✔️
 [29] 	SQLi database retriever 	✔️
-[30] 	Spam creator 	❌
+[30] 	Spam creator 	✔️
 ############################################################################
 Level 3 	Advanced Network Attacks 	Example
 ############################################################################
