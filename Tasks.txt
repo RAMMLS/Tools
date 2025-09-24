@@ -39,7 +39,7 @@ Level 2 	Essential 	Example
 Level 3 	Advanced Network Attacks 	Example
 ############################################################################
 [31] 	Payload for reverse shell 	✔️
-[32] 	Payload to capture screenshots 	❌
+[32] 	Payload to capture screenshots 	✔️
 [33] 	Implement a Botnet 	❌
 [34] 	Passive web scanner 	❌
 [35] 	ARP poisoning tool 	❌
