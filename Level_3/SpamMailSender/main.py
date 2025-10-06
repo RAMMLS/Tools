@@ -1,18 +1,3 @@
-"""
-╔═════════════════════════════════════════════════════════════════════════════════╗
-║                                                                                 ║
-║                                   Beast bomber                                  ║
-║  Author:                                                                        ║
-║  https://github.com/un1ucm                                                      ║
-║                                                                                 ║
-║  The author of this program is not responsible for its use!                     ║
-║  When posting this code on other resources, please indicate the author!         ║
-║                                                                                 ║
-║                               All rights reserved.                              ║
-║                            Copyright (C) 2024 un1ucm                            ║
-║                                                                                 ║
-╚═════════════════════════════════════════════════════════════════════════════════╝
-"""
 import os
 import fade
 import ctypes
