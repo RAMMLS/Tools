@@ -47,7 +47,7 @@ Level 3 	Advanced Network Attacks 	Example
 [37] 	Application to encrypt a file 	✔️
 [38] 	Develop a Ransomware application 	✔️
 [39] 	Spam Email sender 	✔️
-[40] 	HTTP server for phishing 	❌
+[40] 	HTTP server for phishing 	✔️
 [41] 	Honeypot creator 	❌
 [42] 	Application that connects to the Tor Network 	❌
 [43] 	IRC Server 	❌
