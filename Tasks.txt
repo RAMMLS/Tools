@@ -49,7 +49,7 @@ Level 3 	Advanced Network Attacks 	Example
 [39] 	Spam Email sender 	✔️
 [40] 	HTTP server for phishing 	✔️
 [41] 	Honeypot creator 	✔️
-[42] 	Application that connects to the Tor Network 	❌
+[42] 	Application that connects to the Tor Network 	✔️
 [43] 	IRC Server 	❌
 [44] 	Packet Capture tool 	❌
 ############################################################################
