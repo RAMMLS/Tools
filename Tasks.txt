@@ -55,7 +55,7 @@ Level 3 	Advanced Network Attacks 	Example
 ############################################################################
 Level 4 	Data analysis, payloads and more networking 	Example
 ############################################################################
-[45] 	Packet Data analysis 	❌
+[45] 	Packet Data analysis 	✔️
 [46] 	Packet image analysis with OpenCV 	❌
 [47] 	Develop a hexdump tool 	❌
 [48] 	Payload that moves the mouse cursor 	❌
