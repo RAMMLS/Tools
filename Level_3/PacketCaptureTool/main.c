@@ -23,6 +23,8 @@ u_char* learn_IP()
 	return ip_addr;
 }
 
+
+
 u_char *learn_MAC() {
   IP_ADAPTER_INFO ip_ainf[128];
   PIP_ADAPTER_INFO pip_ainf = ip_ainf;
@@ -33,6 +35,8 @@ u_char *learn_MAC() {
   return mac_addr;
 }
 
+
+
 IPAddr DestIP = 0, ScrIP = 0;
 static u_long MacAddr[2];
 u_long PhysAddrLen;
@@ -41,4 +45,31 @@ DestIPAddr = inet_addr(destIpString); // IP адрес маршрутизато�
 memset (&MacAddr, 0xff, sizeof(MacAddr)); // Широковещательная рассылка 
 if (SendAddr (DestIPAddr, ScrIpAddr, &MacAddr, &PhysAddrLen) == NO_ERROR) {
   *bPhysAddr = (BYTE *) & MacAddr; // Искомый MAC адрес
+}
+
+// Определяем интерфейс
+pcap_if_t *alldevs, *dev;
+char errbuf[PCAP_ERRBUF_SIZE];
+int inum, i =0;
+pcap_findalldevs(&alldevs, errbuf);
+scanf_s("%dev", &inum);
+for (dev = alldevs, i = 0; i < inum -1; dev = dev -> next, i++)
+  pcap_t *adhandle;
+adhandle = pcap_open_line(dev -> name, 65535, 0, 1000, errbuf);
+
+
+// Собираем воедино пакет для отправки 
+u_short checksum(u_char *buffer, int size) {
+  u_long chksum = 0;
+  while (size > 1) {
+    chksum += *buffer++;
+    size -= sizeof(u_short);
+  }
+
+  if (size) 
+    chksum += *(u_char*)buffer;
+  chksum = (chksum >> 16) + (chksum &0xffff);
+  chksum += (chksum >> 16);
+  
+  return (u_short)(~chksum);
 }
