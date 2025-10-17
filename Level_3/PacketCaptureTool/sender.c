@@ -1,5 +1,5 @@
 #include <stdio.h>
-
+#include <libpcap.h>
 
 u_char* learn_IP()
 {
@@ -71,5 +71,7 @@ u_short checksum(u_char *buffer, int size) {
   chksum = (chksum >> 16) + (chksum &0xffff);
   chksum += (chksum >> 16);
   
-  return (u_short)(~chksum);
+  return (u_short)(~chksum)
 }
+
+pcap_sendpacket(adhandle, packet, 43);
