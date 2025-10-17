@@ -2,9 +2,10 @@ import pandas as pd
 import numpy as np 
 import pycountry 
 import matplotlib.pyplot as plt 
-from matplotlib import cm 
-from mpl_toolkits.mplot3d import Axes3D
 import os
+
+# Создаем папку для графиков
+os.makedirs('/app/ufo_graphs', exist_ok=True)
 
 # Размер надписей на графиках 
 PLOT_LABEL_FONT_SIZE = 14
@@ -12,16 +13,16 @@ PLOT_LABEL_FONT_SIZE = 14
 # Генерация цветовой схемы 
 def getColors(n):
     COLORS = []
-    cmap = plt.cm.get_cmap('hsv', n)
+    # Исправлено: новая версия get_cmap
+    cmap = plt.colormaps['hsv'].resampled(n)
 
     for i in np.arange(n):
         COLORS.append(cmap(i))
 
     return COLORS
 
-# Заглушка для перевода (так как Yandex API требует реальный ключ)
+# Заглушка для перевода
 def translate(string, translator_obj=None):
-    # Простой словарь для перевода основных терминов
     translations = {
         'circle': 'круг',
         'triangle': 'треугольник', 
@@ -48,14 +49,13 @@ def dict_sort(my_dict):
 # Загрузка данных
 try:
     df = pd.read_csv('./scrubbed.csv', low_memory=False)
-    # Заменяем NaN в столбце shape на 'unknown'
     df['shape'] = df['shape'].fillna('unknown')
 except Exception as e:
     print(f"Ошибка загрузки CSV: {e}")
     exit(1)
 
 # Обработка стран
-country_label_count = pd.value_counts(df['country'].values)
+country_label_count = pd.Series(df['country'].values).value_counts()
 for label in list(country_label_count.keys()):
     try:
         if str(label).upper() == 'US':
@@ -71,15 +71,15 @@ for label in list(country_label_count.keys()):
         print(f"Ошибка обработки страны {label}: {e}")
 
 # Перевод названий форм
-shapes_label_count = pd.value_counts(df['shape'].values)
+shapes_label_count = pd.Series(df['shape'].values).value_counts()
 for label in list(shapes_label_count.keys()):
     t = translate(str(label))
     df = df.replace({'shape': str(label)}, t)
 
 # График 1: Страны с наибольшим количеством наблюдений
-country_count = pd.value_counts(df['country'].values, sort=True)
+country_count = pd.Series(df['country'].values).value_counts(sort=True)
 country_count_keys, country_count_values = dict_sort(dict(country_count))    
-TOP_COUNTRY = min(len(country_count_keys), 10)  # Ограничиваем до 10 стран
+TOP_COUNTRY = min(len(country_count_keys), 10)
 
 plt.figure(figsize=(12, 6))
 plt.title('Страны, где больше всего наблюдений', fontsize=PLOT_LABEL_FONT_SIZE)
@@ -88,7 +88,8 @@ plt.xticks(np.arange(TOP_COUNTRY), country_count_keys[:TOP_COUNTRY], rotation=45
 plt.yticks(fontsize=PLOT_LABEL_FONT_SIZE)
 plt.ylabel('Количество наблюдений', fontsize=PLOT_LABEL_FONT_SIZE)
 plt.tight_layout()
-plt.savefig('countries_plot.png')
+plt.savefig('/app/ufo_graphs/countries_plot.png')
+print("График стран сохранен: /app/ufo_graphs/countries_plot.png")
 plt.show()
 
 # График 2: Наблюдения по месяцам
@@ -113,13 +114,14 @@ plt.ylabel('Частота появления', fontsize=PLOT_LABEL_FONT_SIZE)
 plt.yticks(fontsize=PLOT_LABEL_FONT_SIZE)
 plt.title('Частота появления объектов по месяцам', fontsize=PLOT_LABEL_FONT_SIZE)
 plt.tight_layout()
-plt.savefig('/app/output/filename.png')
+plt.savefig('/app/ufo_graphs/months_plot.png')
+print("График месяцев сохранен: /app/ufo_graphs/months_plot.png")
 plt.show()
 
 # График 3: Типы объектов
-shapes_type_count = pd.value_counts(df['shape'].values)
+shapes_type_count = pd.Series(df['shape'].values).value_counts()
 shapes_type_count_keys, shapes_count_values = dict_sort(dict(shapes_type_count))
-OBJECT_COUNT = min(len(shapes_type_count_keys), 15)  # Ограничиваем до 15 типов
+OBJECT_COUNT = min(len(shapes_type_count_keys), 15)
 
 plt.figure(figsize=(12, 6))
 plt.title('Типы объектов', fontsize=PLOT_LABEL_FONT_SIZE)
@@ -128,7 +130,8 @@ plt.xticks(np.arange(OBJECT_COUNT), shapes_type_count_keys[:OBJECT_COUNT], rotat
 plt.yticks(fontsize=PLOT_LABEL_FONT_SIZE)
 plt.ylabel('Сколько раз видели', fontsize=PLOT_LABEL_FONT_SIZE)
 plt.tight_layout()
-plt.savefig('shapes_plot.png')
+plt.savefig('/app/ufo_graphs/shapes_plot.png')
+print("График типов объектов сохранен: /app/ufo_graphs/shapes_plot.png")
 plt.show()
 
 # График 4: Среднее время появления
@@ -136,11 +139,10 @@ shapes_durations_dict = {}
 for shape in shapes_type_count_keys[:OBJECT_COUNT]:
     try:
         dfs = df[['duration (seconds)', 'shape']].loc[df['shape'] == shape]
-        # Преобразуем в числовой формат и убираем некорректные значения
         dfs['duration (seconds)'] = pd.to_numeric(dfs['duration (seconds)'], errors='coerce')
         mean_duration = dfs['duration (seconds)'].mean()
         if not np.isnan(mean_duration):
-            shapes_durations_dict[shape] = mean_duration / 3600.0  # в часах
+            shapes_durations_dict[shape] = mean_duration / 3600.0
     except:
         continue
 
@@ -154,9 +156,10 @@ if shapes_durations_dict_keys:
     plt.xticks(np.arange(len(shapes_durations_dict_keys)), shapes_durations_dict_keys, rotation=45, fontsize=12)
     plt.ylabel('Среднее время появления в часах', fontsize=PLOT_LABEL_FONT_SIZE)
     plt.tight_layout()
-    plt.savefig('durations_plot.png')
+    plt.savefig('/app/ufo_graphs/durations_plot.png')
+    print("График времени появления сохранен: /app/ufo_graphs/durations_plot.png")
     plt.show()
 else:
     print("Нет данных для графика времени появления")
 
-print("Все графики успешно построены!")
+print("Все графики успешно построены и сохранены в папку /app/ufo_graphs/")

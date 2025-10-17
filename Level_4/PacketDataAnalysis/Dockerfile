@@ -14,8 +14,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY main.py /app/
 COPY scrubbed.csv /app/
 
-# Создаем директорию для графиков
-RUN mkdir -p /app/output
+# Создаем папку для графиков в контейнере
+RUN mkdir -p /app/ufo_graphs
 
 ENV MPLBACKEND=Agg
 ENV YANDEX_API_KEY="test_key"
