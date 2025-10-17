@@ -1,0 +1,47 @@
+datetime,city,state,country,shape,duration (seconds),duration (hours/min),comments,date posted,latitude,longitude
+1/1/2010,laurel,md,us,circle,300,5 minutes,"We saw a bright circle object in the sky",1/5/2010,39.099,-76.848
+1/15/2010,phoenix,az,us,triangle,600,10 minutes,"Triangular craft with lights",1/20/2010,33.448,-112.074
+2/3/2010,chicago,il,us,fireball,30,30 seconds,"Bright fireball moving fast",2/5/2010,41.878,-87.630
+2/20/2010,miami,fl,us,oval,1200,20 minutes,"Large oval shaped object hovering",2/25/2010,25.761,-80.192
+3/10/2010,seattle,wa,us,light,180,3 minutes,"Pulsating lights in formation",3/12/2010,47.606,-122.332
+3/25/2010,denver,co,us,circle,480,8 minutes,"Multiple circular objects",3/28/2010,39.739,-104.990
+4/5/2010,boston,ma,us,unknown,60,1 minute,"Strange object couldn't identify",4/7/2010,42.360,-71.059
+4/18/2010,atlanta,ga,us,triangle,900,15 minutes,"Silent triangular craft",4/20/2010,33.749,-84.388
+5/2/2010,portland,or,us,sphere,300,5 minutes,"Glowing sphere moving slowly",5/4/2010,45.515,-122.679
+5/22/2010,austin,tx,us,fireball,45,45 seconds,"Red fireball descending",5/24/2010,30.267,-97.743
+6/8/2010,detroit,mi,us,oval,720,12 minutes,"Large oval with bright lights",6/10/2010,42.331,-83.046
+6/25/2010,las vegas,nv,us,light,600,10 minutes,"Multiple colored lights",6/28/2010,36.169,-115.140
+7/3/2010,minneapolis,mn,us,circle,180,3 minutes,"Circular object changing colors",7/5/2010,44.977,-93.265
+7/20/2010,new york,ny,us,triangle,1200,20 minutes,"Large triangular craft",7/22/2010,40.713,-74.006
+8/5/2010,san diego,ca,us,sphere,480,8 minutes,"Metallic sphere hovering",8/7/2010,32.715,-117.161
+8/18/2010,philadelphia,pa,us,unknown,120,2 minutes,"Unidentified flying object",8/20/2010,39.952,-75.165
+9/2/2010,phoenix,az,us,fireball,30,30 seconds,"Green fireball streak",9/4/2010,33.448,-112.074
+9/15/2010,houston,tx,us,oval,900,15 minutes,"Oval shaped craft with windows",9/17/2010,29.760,-95.369
+10/1/2010,los angeles,ca,us,circle,600,10 minutes,"Multiple circles in formation",10/3/2010,34.052,-118.244
+10/20/2010,chicago,il,us,triangle,300,5 minutes,"Small triangular object",10/22/2010,41.878,-87.630
+11/5/2010,miami,fl,us,light,180,3 minutes,"Pulsating white light",11/7/2010,25.761,-80.192
+11/25/2010,seattle,wa,us,sphere,480,8 minutes,"Blue sphere moving erratically",11/27/2010,47.606,-122.332
+12/10/2010,denver,co,us,unknown,60,1 minute,"Fast moving unknown object",12/12/2010,39.739,-104.990
+12/28/2010,boston,ma,us,fireball,45,45 seconds,"Orange fireball explosion",12/30/2010,42.360,-71.059
+1/5/2011,atlanta,ga,us,circle,1200,20 minutes,"Large circular craft",1/7/2011,33.749,-84.388
+1/20/2011,portland,or,us,triangle,720,12 minutes,"V-shaped formation",1/22/2011,45.515,-122.679
+2/3/2011,austin,tx,us,oval,300,5 minutes,"Oval with red lights",2/5/2011,30.267,-97.743
+2/18/2011,detroit,mi,us,light,900,15 minutes,"Bright lights in triangle",2/20/2011,42.331,-83.046
+3/8/2011,las vegas,nv,us,sphere,180,3 minutes,"Metallic sphere reflecting light",3/10/2011,36.169,-115.140
+3/25/2011,minneapolis,mn,us,circle,600,10 minutes,"Multiple circular objects",3/27/2011,44.977,-93.265
+4/5/2011,new york,ny,us,unknown,120,2 minutes,"Fast moving blur",4/7/2011,40.713,-74.006
+4/20/2011,san diego,ca,us,fireball,30,30 seconds,"Blue fireball trail",4/22/2011,32.715,-117.161
+5/10/2011,philadelphia,pa,us,triangle,480,8 minutes,"Black triangle silent",5/12/2011,39.952,-75.165
+5/28/2011,phoenix,az,us,oval,900,15 minutes,"Large oval craft",5/30/2011,33.448,-112.074
+6/15/2011,houston,tx,us,light,300,5 minutes,"White light pulsating",6/17/2011,29.760,-95.369
+7/2/2011,los angeles,ca,us,circle,720,12 minutes,"Formation of circles",7/4/2011,34.052,-118.244
+7/20/2011,chicago,il,us,sphere,180,3 minutes,"Silver sphere hovering",7/22/2011,41.878,-87.630
+8/8/2011,miami,fl,us,unknown,60,1 minute,"Unidentified object",8/10/2011,25.761,-80.192
+8/25/2011,seattle,wa,us,fireball,45,45 seconds,"Green fireball",8/27/2011,47.606,-122.332
+9/10/2011,denver,co,us,triangle,1200,20 minutes,"Large triangular craft",9/12/2011,39.739,-104.990
+9/28/2011,boston,ma,us,oval,480,8 minutes,"Oval with bright lights",9/30/2011,42.360,-71.059
+10/15/2011,atlanta,ga,us,circle,300,5 minutes,"Red circular object",10/17/2011,33.749,-84.388
+11/2/2011,portland,or,us,light,900,15 minutes,"Multiple lights in sky",11/4/2011,45.515,-122.679
+11/20/2011,austin,tx,us,sphere,600,10 minutes,"Glowing sphere",11/22/2011,30.267,-97.743
+12/5/2011,detroit,mi,us,unknown,120,2 minutes,"Strange object",12/7/2011,42.331,-83.046
+12/25/2011,las vegas,nv,us,fireball,30,30 seconds,"Bright fireball",12/27/2011,36.169,-115.140
