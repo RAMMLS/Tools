@@ -1,45 +1,86 @@
-#include <stdio.h>
 #include <pcap.h>
+#include <stdio.h>
+#include <arpa/inet.h>
+#include <time.h>
+#include <string.h>
 
-char pckfilter[] = "ipdst host 192.168.1.1";
-struct bpf_program fcode;
-if (d -> addresses != NULL) 
-  netmask = ((struct sockaddr_in *) (d -> addresses -> netmask)) ->
-else netmask = 0xffffff;
-pcap_compile(adhandle, &fcode, pckfilter, 1, netmask);
-pcap_setfilter(adhandle, &fcode);
+// Простая структура для IP заголовка
+struct ip_header {
+    u_char byte1, byte2, byte3, byte4;
+};
 
-void packet_handler(u_char *param, const struct pcap_pkthdr *pkt_header, const u_char *pkd_data);
+// Простая структура для UDP заголовка
+struct udp_header {
+    u_short src_port;
+    u_short dest_port;
+};
 
-time_t local_tv_sec = header -> ts.tv_sec;
-char strtime[16];
-localtime_s(&local_tv_sec, &ltime);
-strftime(strtime, sizeof strtime, "%H:%M:%S", &ltime);
-
-ip_header *ip_hg;
-ip_hd = (ip_header*)(pkd_data + 14);
-if (!Count_ip_check_sum(ip_hd)) {
-  return;
+void packet_handler(u_char *user_data, const struct pcap_pkthdr *header, const u_char *packet) {
+    struct ip_header *ip_hd;
+    struct udp_header *udp_hd;
+    
+    // Пропускаем Ethernet заголовок (14 байт)
+    ip_hd = (struct ip_header*)(packet + 14);
+    
+    // Пропускаем IP заголовок (20 байт) чтобы добраться до UDP
+    udp_hd = (struct udp_header*)(packet + 14 + 20);
+    
+    u_short sendport = ntohs(udp_hd->src_port);
+    u_short destport = ntohs(udp_hd->dest_port);
+    
+    // Получаем время
+    time_t now = time(NULL);
+    struct tm *tm_info = localtime(&now);
+    char timestr[20];
+    strftime(timestr, 20, "%H:%M:%S", tm_info);
+    
+    printf("%s,%.6d len:%d\n", timestr, header->ts.tv_usec, header->len);
+    printf("%d.%d.%d.%d.%d -> %d.%d.%d.%d.%d\n",
+         ip_hd->byte1, ip_hd->byte2, ip_hd->byte3, ip_hd->byte4, sendport,
+         ip_hd->byte1, ip_hd->byte2, ip_hd->byte3, ip_hd->byte4, destport);
 }
 
-u_int ip_len = (ip_hd->ver_ihl & 0xf) * 4;
-udp_header *udp_hd;
-udp_hd = (udp_header *)((u_char*)ip_hd + ip_len);
-u_char* pshd = new u_char[12];	// псевдозаголовок
-pshd[0] = ip_hd->src_ip.byte1; pshd[1] = ip_hd->src_ip.byte2; 
-pshd[2] = ip_hd->src_ip.byte3; pshd[3] = ip_hd->src_ip.byte4;
-pshd[4] = ip_hd->dest_ip.byte1; pshd[5] = ip_hd->dest_ip.byte2; 
-pshd[6] = ip_hd->dest_ip.byte3; pshd[7] = ip_hd->dest_ip.byte4;
-pshd[8] = 0x00; pshd[9] = 0x11; pshd[10] = 0x00; pshd[11] = 0x09;
-if (!Count_udp_check_sum(udp_hd, pshd))
-	return;
-
-u_short sendport = ntohs(udp_hd->src_port);
-u_short destport = ntohs(udp_hd->dest_port);
-printf("%s,%.6d len:%d\n", timestr, header->ts.tv_usec, header->len);
-printf("%d.%d.%d.%d.%d -> %d.%d.%d.%d.%d\n",
-     ip_hd->src_ip.byte1, ip_hd->src_ip.byte2, ip_hd->src_ip.byte3, ip_hd->src_ip.byte4, sendport,
-     ip_hd->dest_ip.byte1, ip_hd->dest_ip.byte2, ip_hd->dest_ip.byte3, ip_hd->dest_ip.byte4, destport);
-
-
-
+int main() {
+    char errbuf[PCAP_ERRBUF_SIZE];
+    pcap_if_t *alldevs, *dev;
+    int i = 0;
+    
+    // Получаем список устройств
+    if (pcap_findalldevs(&alldevs, errbuf) == -1) {
+        fprintf(stderr, "Error finding devices: %s\n", errbuf);
+        return 1;
+    }
+    
+    // Выводим список устройств
+    for (dev = alldevs; dev != NULL; dev = dev->next) {
+        printf("%d. %s", ++i, dev->name);
+        if (dev->description)
+            printf(" (%s)\n", dev->description);
+        else
+            printf(" (No description available)\n");
+    }
+    
+    if (i == 0) {
+        printf("No interfaces found!\n");
+        return 1;
+    }
+    
+    // Используем первое устройство
+    dev = alldevs;
+    pcap_t *handle = pcap_open_live(dev->name, BUFSIZ, 1, 1000, errbuf);
+    
+    if (handle == NULL) {
+        fprintf(stderr, "Couldn't open device %s: %s\n", dev->name, errbuf);
+        return 1;
+    }
+    
+    printf("Capturing on %s...\n", dev->name);
+    
+    // Захватываем пакеты
+    pcap_loop(handle, 0, packet_handler, NULL);
+    
+    pcap_close(handle);
+    pcap_freealldevs(alldevs);
+    
+    return 0;
+}

@@ -1,0 +1,19 @@
+# Собираем образ
+docker build -t packet-sender .
+
+1. Базовый запуск sender:
+docker run --rm --privileged --net=host -it packet-sender
+
+2. Запуск mail (анализатор пакетов):
+docker run --rm --privileged --net=host -it packet-sender ./mail
+
+3. Запуск с доступом к конкретным сетевым интерфейсам: 
+docker run --rm --cap-add=NET_RAW --cap-add=NET_ADMIN --net=host -it packet-sender
+
+4. Запуск в фоновом режиме: 
+docker run -d --name packet-sender-container --privileged --net=host packet-sender
+
+5. Запуск с монтированием директории для pcap-файлов: 
+docker run --rm --privileged -v $(pwd)/pcap_files:/pcap -it packet-sender
+
+
