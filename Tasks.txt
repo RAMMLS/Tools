@@ -51,7 +51,7 @@ Level 3 	Advanced Network Attacks 	Example
 [41] 	Honeypot creator 	✔️
 [42] 	Application that connects to the Tor Network 	✔️
 [43] 	IRC Server 	✔️
-[44] 	Packet Capture tool 	❌
+[44] 	Packet Capture tool 	✔️
 ############################################################################
 Level 4 	Data analysis, payloads and more networking 	Example
 ############################################################################
