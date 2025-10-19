@@ -11,9 +11,11 @@ class Engine:
     def process(self, image):
         current_info = ImageInfo(image)
         for step in self.steps:
+            history.append(current_info)
             current_info = step.process(current_info)
 
-        return current_info
+
+        return current_info, history
 
 
 class ImageInfo:
@@ -25,7 +27,7 @@ class ImageInfo:
 
         self.image = image
 
-
+'''
 class MedianBlurProcessingStep(ImageProcessingStep):
     """Шаг, отвечающий за предобработку типа Медианная фильтрация"""
 
@@ -41,3 +43,5 @@ class MedianBlurProcessingStep(ImageProcessingStep):
         median_image = cv2.medianBlur(info.image, self.ksize)
         info.filtered_image=median_image
         return info
+
+'''
