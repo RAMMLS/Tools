@@ -1,0 +1,9 @@
+FROM mono:6.12.0.182
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    x11-apps \
+    && rm -rf /var/lib/apt/lists/*
+WORKDIR /app
+COPY MouseTracker.cs /app/
+RUN mcs -r:System.Windows.Forms -r:System.Drawing -r:System.Data MouseTracker.cs
+ENV DISPLAY=:0
+CMD ["mono", "MouseTracker.exe"]
