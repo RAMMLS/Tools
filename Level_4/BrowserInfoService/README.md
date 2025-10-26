@@ -6,19 +6,19 @@ text
 
 BrowserInfoService/
 ├── src/
-│   ├── BrowserInfoService.csproj          
-│   ├── Program.cs                         
+│   ├── BrowserInfoService.csproj
+│   ├── Program.cs
 │   ├── Models/
-│   │   └── BrowserInfo.cs                 
+│   │   └── BrowserInfo.cs
 │   ├── Services/
-│   │   ├── IBrowserInfoService.cs         
-│   │   └── BrowserInfoCollector.cs        
+│   │   ├── IBrowserInfoService.cs
+│   │   └── BrowserInfoCollector.cs
 │   ├── Extensions/
-│   │   └── HttpContextExtensions.cs       
+│   │   └── HttpContextExtensions.cs
 │   └── Controllers/
-│       └── BrowserInfoController.cs       
-├── Dockerfile                             
-└── README.md                              
+│       └── BrowserInfoController.cs
+├── Dockerfile
+└── README.md
 
 🚀 Быстрый старт
 Предварительные требования
