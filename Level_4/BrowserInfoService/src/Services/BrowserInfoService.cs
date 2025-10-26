@@ -3,22 +3,45 @@ using BrowserInfoService.Extensions;
 
 namespace BrowserInfoService.Services
 {
-    public class BrowserInfoService : IBrowserInfoService
+    public class BrowserInfoCollector : IBrowserInfoService
     {
+        private readonly ILogger<BrowserInfoCollector> _logger;
+
+        public BrowserInfoCollector(ILogger<BrowserInfoCollector> logger)
+        {
+            _logger = logger;
+        }
+
         public BrowserInfo GetBrowserInfo(HttpContext context)
         {
-            var request = context.Request;
-            
-            return new BrowserInfo
+            try
             {
-                UserAgent = request.Headers.UserAgent.ToString() ?? string.Empty,
-                AcceptLanguage = request.Headers.AcceptLanguage.ToString() ?? string.Empty,
-                AcceptEncoding = request.Headers.AcceptEncoding.ToString() ?? string.Empty,
-                Connection = request.Headers.Connection.ToString() ?? string.Empty,
-                CacheControl = request.Headers.CacheControl.ToString() ?? string.Empty,
-                SecFetchDest = request.Headers["Sec-Fetch-Dest"].ToString() ?? string.Empty,
-                RemoteIp = context.GetRemoteIpAddress()
-            };
+                var request = context.Request;
+                
+                var browserInfo = new BrowserInfo
+                {
+                    UserAgent = GetHeaderValue(request.Headers, "User-Agent"),
+                    AcceptLanguage = GetHeaderValue(request.Headers, "Accept-Language"),
+                    AcceptEncoding = GetHeaderValue(request.Headers, "Accept-Encoding"),
+                    Connection = GetHeaderValue(request.Headers, "Connection"),
+                    CacheControl = GetHeaderValue(request.Headers, "Cache-Control"),
+                    SecFetchDest = GetHeaderValue(request.Headers, "Sec-Fetch-Dest"),
+                    RemoteIp = context.GetRemoteIpAddress()
+                };
+
+                _logger.LogInformation("Browser info collected for IP: {RemoteIp}", browserInfo.RemoteIp);
+                return browserInfo;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error collecting browser info");
+                throw;
+            }
+        }
+
+        private static string GetHeaderValue(IHeaderDictionary headers, string key)
+        {
+            return headers.TryGetValue(key, out var value) ? value.ToString() : string.Empty;
         }
     }
 }
