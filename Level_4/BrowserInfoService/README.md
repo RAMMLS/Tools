@@ -6,19 +6,19 @@ text
 
 BrowserInfoService/
 ├── src/
-│   ├── BrowserInfoService.csproj          # Конфигурация проекта .NET
-│   ├── Program.cs                         # Точка входа приложения
+│   ├── BrowserInfoService.csproj          
+│   ├── Program.cs                         
 │   ├── Models/
-│   │   └── BrowserInfo.cs                 # Модель данных информации о браузере
+│   │   └── BrowserInfo.cs                 
 │   ├── Services/
-│   │   ├── IBrowserInfoService.cs         # Интерфейс сервиса
-│   │   └── BrowserInfoCollector.cs        # Реализация сервиса сбора информации
+│   │   ├── IBrowserInfoService.cs         
+│   │   └── BrowserInfoCollector.cs        
 │   ├── Extensions/
-│   │   └── HttpContextExtensions.cs       # Расширения для HttpContext
+│   │   └── HttpContextExtensions.cs       
 │   └── Controllers/
-│       └── BrowserInfoController.cs       # Web API контроллер
-├── Dockerfile                             # Конфигурация Docker контейнера
-└── README.md                              # Документация
+│       └── BrowserInfoController.cs       
+├── Dockerfile                             
+└── README.md                              
 
 🚀 Быстрый старт
 Предварительные требования
