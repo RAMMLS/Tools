@@ -3,9 +3,9 @@
 A comprehensive list of 100 cybersecurity projects organized by difficulty level, from basic networking to advanced exploitation techniques.
 
 ## 📊 Progress Overview
-- **Completed**: 53/100 projects
-- **Remaining**: 47 projects
-- **Overall Progress**: 53%
+- **Completed**: 54/100 projects
+- **Remaining**: 46 projects
+- **Overall Progress**: 54%
 
 ---
 
@@ -112,7 +112,7 @@ A comprehensive list of 100 cybersecurity projects organized by difficulty level
 | 69 | Process monitor (Windows and Linux) | ❌ |
 | 70 | Windows token privilege escalation tool | ❌ |
 
-**Progress**: 8/26 (31%)
+**Progress**: 9/26 (32%)
 
 ---
 
@@ -162,7 +162,7 @@ A comprehensive list of 100 cybersecurity projects organized by difficulty level
 | Level 1 | 11 | 11 | 100% |
 | Level 2 | 20 | 20 | 100% |
 | Level 3 | 14 | 14 | 100% |
-| Level 4 | 8 | 26 | 31% |
+| Level 4 | 9 | 26 | 32% |
 | Level 5 | 0 | 30 | 0% |
 
 
