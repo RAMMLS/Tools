@@ -1,0 +1,19 @@
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+WORKDIR /app
+EXPOSE 80
+
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+COPY ["AsciiNameGenerator.Web/AsciiNameGenerator.Web.csproj", "AsciiNameGenerator.Web/"]
+RUN dotnet restore "AsciiNameGenerator.Web/AsciiNameGenerator.Web.csproj"
+COPY . .
+WORKDIR "/src/AsciiNameGenerator.Web"
+RUN dotnet build "AsciiNameGenerator.Web.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "AsciiNameGenerator.Web.csproj" -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "AsciiNameGenerator.Web.dll"]

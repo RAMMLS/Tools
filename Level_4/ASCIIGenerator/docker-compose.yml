@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  ascii-generator:
+    build: .
+    container_name: ascii-name-generator
+    working_dir: /app
+    volumes:
+      - ./output:/app/output
+      - ./logs:/app/logs
+    stdin_open: true
+    tty: true
+    environment:
+      - DOTNET_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:80
+    restart: unless-stopped
+
+  # Дополнительный сервис для веб-версии (опционально)
+  ascii-web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    container_name: ascii-web-generator
+    ports:
+      - "8080:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - ascii-generator
