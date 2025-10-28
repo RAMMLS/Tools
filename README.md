@@ -94,7 +94,7 @@ A comprehensive list of 100 cybersecurity projects organized by difficulty level
 | 51 | Payload that starts as a daemon | ✅ |
 | 52 | Payload that retrieves browser information | ✅ |
 | 53 | Link generator | ✅ |
-| 54 | ASCII Name generator | ❌ |
+| 54 | ASCII Name generator | ✅ |
 | 55 | Full chat server with private messages and file transfer | ❌ |
 | 56 | Simple firewall | ❌ |
 | 57 | Gateway | ❌ |
