@@ -15,3 +15,4 @@ namespace AsciiNameGenerator.Models
         }
     }
 }
+

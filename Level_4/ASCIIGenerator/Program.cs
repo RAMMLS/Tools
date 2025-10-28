@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using AsciiNameGenerator.Fonts;
 using AsciiNameGenerator.Models;
 using AsciiNameGenerator.Styles;
 
@@ -9,8 +8,8 @@ namespace AsciiNameGenerator
 {
     class Program
     {
-        private static AsciiArtGenerator _generator;
-        private static GenerationOptions _options;
+        private static AsciiArtGenerator? _generator;
+        private static GenerationOptions? _options;
 
         static void Main(string[] args)
         {
@@ -21,12 +20,10 @@ namespace AsciiNameGenerator
             
             if (args.Length > 0)
             {
-                // Режим командной строки
                 ProcessCommandLineArgs(args);
             }
             else
             {
-                // Интерактивный режим
                 ShowInteractiveMenu();
             }
         }
@@ -87,6 +84,12 @@ namespace AsciiNameGenerator
 
         static void GenerateArtInteractive()
         {
+            if (_generator == null || _options == null)
+            {
+                ShowError("Generator not initialized!");
+                return;
+            }
+
             Console.Write("\nEnter text to convert: ");
             var text = Console.ReadLine();
 
@@ -112,12 +115,12 @@ namespace AsciiNameGenerator
 
         static void ChangeFont()
         {
+            if (_options == null) return;
+
             Console.WriteLine("\n📝 Available Fonts:");
             Console.WriteLine("1. Standard");
             Console.WriteLine("2. Bold");
             Console.WriteLine("3. Block");
-            Console.WriteLine("4. Shadow");
-            Console.WriteLine("5. Script");
             Console.Write("Select font: ");
 
             var fontChoice = Console.ReadLine();
@@ -126,8 +129,6 @@ namespace AsciiNameGenerator
                 "1" => "Standard",
                 "2" => "Bold",
                 "3" => "Block",
-                "4" => "Shadow",
-                "5" => "Script",
                 _ => "Standard"
             };
 
@@ -137,13 +138,14 @@ namespace AsciiNameGenerator
 
         static void ChangeColors()
         {
+            if (_options == null) return;
+
             Console.WriteLine("\n🌈 Color Options:");
             Console.WriteLine("1. Default (White)");
             Console.WriteLine("2. Red");
             Console.WriteLine("3. Green");
             Console.WriteLine("4. Blue");
             Console.WriteLine("5. Rainbow");
-            Console.WriteLine("6. Gradient");
             Console.Write("Select color: ");
 
             var colorChoice = Console.ReadLine();
@@ -154,7 +156,6 @@ namespace AsciiNameGenerator
                 "3" => ColorStyle.Green,
                 "4" => ColorStyle.Blue,
                 "5" => ColorStyle.Rainbow,
-                "6" => ColorStyle.Gradient,
                 _ => ColorStyle.Default
             };
 
@@ -164,6 +165,8 @@ namespace AsciiNameGenerator
 
         static void ConfigureOptions()
         {
+            if (_options == null) return;
+
             Console.WriteLine("\n⚙️  Configuration:");
             Console.Write($"Width (current: {_options.Width}): ");
             if (int.TryParse(Console.ReadLine(), out int width) && width > 0)
@@ -174,7 +177,7 @@ namespace AsciiNameGenerator
                 _options.Height = height;
 
             Console.Write($"Border (current: {_options.ShowBorder}): ");
-            var borderInput = Console.ReadLine().ToLower();
+            var borderInput = Console.ReadLine()?.ToLower();
             if (borderInput == "y" || borderInput == "yes" || borderInput == "true")
                 _options.ShowBorder = true;
             else if (borderInput == "n" || borderInput == "no" || borderInput == "false")
@@ -186,6 +189,12 @@ namespace AsciiNameGenerator
 
         static void SaveToFile()
         {
+            if (_generator == null || _options == null)
+            {
+                ShowError("Generator not initialized!");
+                return;
+            }
+
             Console.Write("\nEnter text to save: ");
             var text = Console.ReadLine();
 
@@ -201,7 +210,8 @@ namespace AsciiNameGenerator
             try
             {
                 var asciiArt = _generator.Generate(text, _options);
-                FileExport.SaveToText(asciiArt, filename + ".txt");
+                // Используем встроенный метод для сохранения
+                SaveAsciiArtToFile(asciiArt, filename + ".txt");
                 Console.WriteLine($"✅ ASCII art saved to: {filename}.txt");
             }
             catch (Exception ex)
@@ -212,9 +222,27 @@ namespace AsciiNameGenerator
             Thread.Sleep(1500);
         }
 
+        static void SaveAsciiArtToFile(string asciiArt, string filename)
+        {
+            try
+            {
+                System.IO.File.WriteAllText(filename, asciiArt);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to save file: {ex.Message}");
+            }
+        }
+
         static void ShowExamples()
         {
-            var examples = new[] { "HELLO", "WORLD", "ASCII", "ART", "CODING" };
+            if (_generator == null || _options == null)
+            {
+                ShowError("Generator not initialized!");
+                return;
+            }
+
+            var examples = new[] { "HELLO", "WORLD", "ASCII", "ART" };
 
             Console.WriteLine("\n🎭 Example Gallery:\n");
 
@@ -232,9 +260,9 @@ namespace AsciiNameGenerator
 
         static void DisplayAsciiArt(string art)
         {
-            if (_options.ColorStyle != ColorStyle.Default)
+            if (_options?.ColorStyle != ColorStyle.Default)
             {
-                ApplyColorStyle(art, _options.ColorStyle);
+                ApplyColorStyle(art, _options?.ColorStyle ?? ColorStyle.Default);
             }
             else
             {
@@ -284,7 +312,7 @@ namespace AsciiNameGenerator
 /__/ \_\_/ |_| |____/\__/____|_|  |_| |____| (_)
             ";
             Console.WriteLine(header);
-            Console.WriteLine($"Current Font: {_options.FontName} | Color: {_options.ColorStyle}\n");
+            Console.WriteLine($"Current Font: {_options?.FontName} | Color: {_options?.ColorStyle}\n");
         }
 
         static void ShowError(string message)
@@ -297,8 +325,13 @@ namespace AsciiNameGenerator
 
         static void ProcessCommandLineArgs(string[] args)
         {
-            // Обработка аргументов командной строки
-            // Например: AsciiNameGenerator.exe "Hello" --font Bold --color Red
+            // Простая обработка аргументов командной строки
+            if (args.Length > 0 && _generator != null && _options != null)
+            {
+                var text = args[0];
+                var art = _generator.Generate(text, _options);
+                Console.WriteLine(art);
+            }
         }
     }
 }

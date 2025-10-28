@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using AsciiNameGenerator.Fonts;
 using AsciiNameGenerator.Models;
 
 namespace AsciiNameGenerator
@@ -21,18 +20,18 @@ namespace AsciiNameGenerator
 
         private void LoadFonts()
         {
-            _fonts["Standard"] = StandardFont.GetCharacterMap();
-            _fonts["Bold"] = BoldFont.GetCharacterMap();
-            _fonts["Block"] = BlockFont.GetCharacterMap();
+            _fonts["Standard"] = CreateStandardFont();
+            _fonts["Bold"] = CreateBoldFont();
+            _fonts["Block"] = CreateBlockFont();
         }
 
         public string Generate(string text, GenerationOptions options)
         {
             if (string.IsNullOrWhiteSpace(text))
-                throw new ArgumentException("Text cannot be null or empty");
+                return "Please provide text to generate ASCII art.";
 
             if (!_fonts.ContainsKey(options.FontName))
-                throw new ArgumentException($"Font '{options.FontName}' not found");
+                return $"Font '{options.FontName}' not found.";
 
             var font = _fonts[options.FontName];
             var lines = ConvertTextToAscii(text.ToUpper(), font, options);
@@ -44,7 +43,7 @@ namespace AsciiNameGenerator
         {
             var outputLines = new List<string>();
 
-            // Инициализируем линии для этого шрифта
+            // Инициализируем линии
             for (int i = 0; i < font.Height; i++)
             {
                 outputLines.Add("");
@@ -78,9 +77,10 @@ namespace AsciiNameGenerator
         {
             var result = new StringBuilder();
 
-            if (options.ShowBorder)
+            if (options.ShowBorder && lines.Count > 0 && lines[0].Length > 0)
             {
-                var border = new string('═', lines[0].Length + 2);
+                var borderLength = Math.Max(lines[0].Length, 20);
+                var border = new string('═', borderLength);
                 result.AppendLine("╔" + border + "╗");
             }
 
@@ -97,32 +97,71 @@ namespace AsciiNameGenerator
                 result.AppendLine();
             }
 
-            if (options.ShowBorder)
+            if (options.ShowBorder && lines.Count > 0 && lines[0].Length > 0)
             {
-                var border = new string('═', lines[0].Length + 2);
+                var borderLength = Math.Max(lines[0].Length, 20);
+                var border = new string('═', borderLength);
                 result.AppendLine("╚" + border + "╝");
             }
 
-            return result.ToString();
+            return result.ToString().TrimEnd();
+        }
+
+        private CharacterMap CreateStandardFont()
+        {
+            return new CharacterMap
+            {
+                Name = "Standard",
+                Width = 5,
+                Height = 7,
+                Characters = new Dictionary<char, string[]>
+                {
+                    ['A'] = new string[] { " ██╗", "███║", "╚██║", " ██║", " ██║", " ██║", " ╚═╝" },
+                    ['B'] = new string[] { "████╗", "██╔██╗", "████╔╝", "██╔██╗", "██║╚██╗", "██║╚██╗", "╚═╝ ╚═╝" },
+                    ['C'] = new string[] { " █████╗", "██╔══██╗", "██║  ╚═╝", "██║  ██╗", "╚█████╔╝", " ╚════╝", "       " },
+                    ['H'] = new string[] { "██╗  ██╗", "██║  ██║", "███████║", "██╔══██║", "██║  ██║", "██║  ██║", "╚═╝  ╚═╝" },
+                    ['E'] = new string[] { "███████╗", "██╔════╝", "█████╗  ", "██╔══╝  ", "███████╗", "╚══════╝", "        " },
+                    ['L'] = new string[] { "██╗     ", "██║     ", "██║     ", "██║     ", "██║     ", "███████╗", "╚══════╝" },
+                    ['O'] = new string[] { " ██████╗ ", "██╔═══██╗", "██║   ██║", "██║   ██║", "██║   ██║", "╚██████╔╝", " ╚═════╝ " },
+                    ['R'] = new string[] { "██████╗ ", "██╔══██╗", "██████╔╝", "██╔══██╗", "██║  ██║", "██║  ██║", "╚═╝  ╚═╝" },
+                    ['W'] = new string[] { "██╗    ██╗", "██║    ██║", "██║ █╗ ██║", "██║███╗██║", "╚███╔███╔╝", " ╚══╝╚══╝ ", "          " },
+                    [' '] = new string[] { "   ", "   ", "   ", "   ", "   ", "   ", "   " }
+                }
+            };
+        }
+
+        private CharacterMap CreateBoldFont()
+        {
+            return new CharacterMap
+            {
+                Name = "Bold",
+                Width = 6,
+                Height = 7,
+                Characters = new Dictionary<char, string[]>
+                {
+                    ['A'] = new string[] { " █████╗ ", "██╔══██╗", "███████║", "██╔══██║", "██║  ██║", "██║  ██║", "╚═╝  ╚═╝" },
+                    ['B'] = new string[] { "██████╗ ", "██╔══██╗", "██████╔╝", "██╔══██╗", "██║  ██║", "██║  ██║", "██████╔╝" }
+                }
+            };
+        }
+
+        private CharacterMap CreateBlockFont()
+        {
+            return new CharacterMap
+            {
+                Name = "Block",
+                Width = 7,
+                Height = 7,
+                Characters = new Dictionary<char, string[]>
+                {
+                    ['A'] = new string[] { " █████╗ ", "██╔══██╗", "██║  ██║", "███████║", "██╔══██║", "██║  ██║", "╚═╝  ╚═╝" }
+                }
+            };
         }
 
         public List<string> GetAvailableFonts()
         {
             return _fonts.Keys.ToList();
-        }
-
-        public string GenerateRandomArt(string text)
-        {
-            var availableFonts = GetAvailableFonts();
-            var randomFont = availableFonts[_random.Next(availableFonts.Count)];
-            
-            var options = new GenerationOptions
-            {
-                FontName = randomFont,
-                ShowBorder = _random.Next(2) == 0
-            };
-
-            return Generate(text, options);
         }
     }
 }
