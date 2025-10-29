@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  chat-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+    container_name: chat-server
+    ports:
+      - "5000:5000"
+      - "5001:5000"  # Альтернативный порт
+    volumes:
+      - chat-data:/app/files
+      - ./logs:/app/logs
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - DOTNET_RUNNING_IN_CONTAINER=true
+    restart: unless-stopped
+    networks:
+      - chat-network
+
+  # Пример клиента 1
+  chat-client-1:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    container_name: chat-client-1
+    depends_on:
+      - chat-server
+    volumes:
+      - client-downloads-1:/app/downloads
+    environment:
+      - SERVER_HOST=chat-server
+      - SERVER_PORT=5000
+    stdin_open: true
+    tty: true
+    networks:
+      - chat-network
+
+  # Пример клиента 2
+  chat-client-2:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    container_name: chat-client-2
+    depends_on:
+      - chat-server
+    volumes:
+      - client-downloads-2:/app/downloads
+    environment:
+      - SERVER_HOST=chat-server
+      - SERVER_PORT=5000
+    stdin_open: true
+    tty: true
+    networks:
+      - chat-network
+
+volumes:
+  chat-data:
+    driver: local
+  client-downloads-1:
+    driver: local
+  client-downloads-2:
+    driver: local
+
+networks:
+  chat-network:
+    driver: bridge

@@ -1,0 +1,33 @@
+# Multi-stage build для Chat Client
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+
+# Копируем файлы проектов
+COPY ["ChatClient/ChatClient.csproj", "ChatClient/"]
+COPY ["Shared/Shared.csproj", "Shared/"]
+RUN dotnet restore "ChatClient/ChatClient.csproj"
+
+# Копируем весь исходный код
+COPY . .
+
+# Собираем и публикуем клиент
+WORKDIR "/src/ChatClient"
+RUN dotnet publish -c Release -o /app/publish
+
+# Финальный образ
+FROM mcr.microsoft.com/dotnet/runtime:6.0 AS runtime
+WORKDIR /app
+
+# Устанавливаем дополнительные утилиты
+RUN apt-get update && apt-get install -y \
+    procps \
+    && rm -rf /var/lib/apt/lists/*
+
+# Копируем собранное приложение
+COPY --from=build /app/publish .
+
+# Создаем volume для загрузок
+VOLUME /app/downloads
+
+# Точка входа (будет переопределена при запуске)
+ENTRYPOINT ["dotnet", "ChatClient.dll"]

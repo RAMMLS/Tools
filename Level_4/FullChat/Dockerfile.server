@@ -1,0 +1,43 @@
+# Multi-stage build для Chat Server
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+
+# Копируем файлы проектов
+COPY ["ChatServer/ChatServer.csproj", "ChatServer/"]
+COPY ["Shared/Shared.csproj", "Shared/"]
+RUN dotnet restore "ChatServer/ChatServer.csproj"
+
+# Копируем весь исходный код
+COPY . .
+
+# Собираем и публикуем сервер
+WORKDIR "/src/ChatServer"
+RUN dotnet publish -c Release -o /app/publish
+
+# Финальный образ
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS runtime
+WORKDIR /app
+
+# Устанавливаем дополнительные утилиты для отладки
+RUN apt-get update && apt-get install -y \
+    net-tools \
+    iputils-ping \
+    && rm -rf /var/lib/apt/lists/*
+
+# Создаем пользователя для безопасности
+RUN groupadd -r chatgroup && useradd -r -g chatgroup chatuser
+RUN mkdir -p /app/files && chown -R chatuser:chatgroup /app
+
+# Копируем собранное приложение
+COPY --from=build /app/publish .
+USER chatuser
+
+# Создаем volume для файлов
+VOLUME /app/files
+VOLUME /app/logs
+
+# Экспортируем порт
+EXPOSE 5000
+
+# Точка входа
+ENTRYPOINT ["dotnet", "ChatServer.dll"]
