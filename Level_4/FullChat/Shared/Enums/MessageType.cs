@@ -21,3 +21,4 @@ namespace ChatShared.Enums
         Cancelled
     }
 }
+
