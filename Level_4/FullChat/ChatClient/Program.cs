@@ -127,7 +127,6 @@ namespace ChatClient
             Console.WriteLine(message.ToString());
             Console.Write("Accept file transfer? (y/n): ");
             var response = Console.ReadLine()?.Trim().ToLower();
-
             if (response == "y" || response == "yes")
             {
                 if (message.Metadata.TryGetValue("transferId", out var transferId) &&
