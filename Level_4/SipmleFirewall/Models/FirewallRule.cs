@@ -1,5 +1,4 @@
 using System.Net;
-using SimpleFirewall.Rules;
 
 namespace SimpleFirewall.Models
 {
@@ -16,7 +15,8 @@ namespace SimpleFirewall.Models
         Both
     }
 
-    public enum ProtocolType
+    // Изменяем имя enum чтобы избежать конфликта
+    public enum FirewallProtocol
     {
         TCP,
         UDP,
@@ -38,9 +38,9 @@ namespace SimpleFirewall.Models
         // Условия правила
         public string SourceIP { get; set; } = string.Empty;
         public string DestinationIP { get; set; } = string.Empty;
-        public int SourcePort { get; set; } = -1; // -1 означает любой порт
+        public int SourcePort { get; set; } = -1;
         public int DestinationPort { get; set; } = -1;
-        public ProtocolType Protocol { get; set; } = ProtocolType.Any;
+        public FirewallProtocol Protocol { get; set; } = FirewallProtocol.Any;
         
         // Дополнительные условия
         public string ApplicationPath { get; set; } = string.Empty;
