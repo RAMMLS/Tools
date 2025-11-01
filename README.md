@@ -3,9 +3,9 @@
 A comprehensive list of 100 cybersecurity projects organized by difficulty level, from basic networking to advanced exploitation techniques.
 
 ## 📊 Progress Overview
-- **Completed**: 55/100 projects
-- **Remaining**: 45 projects
-- **Overall Progress**: 55%
+- **Completed**: 56/100 projects
+- **Remaining**: 44 projects
+- **Overall Progress**: 56%
 
 ---
 
@@ -96,7 +96,7 @@ A comprehensive list of 100 cybersecurity projects organized by difficulty level
 | 53 | Link generator | ✅ |
 | 54 | ASCII Name generator | ✅ |
 | 55 | Full chat server with private messages and file transfer | ✅ |
-| 56 | Simple firewall | ❌ |
+| 56 | Simple firewall | ✅ |
 | 57 | Gateway | ❌ |
 | 58 | Powershell payload generator | ❌ |
 | 59 | Bash payload generator | ❌ |
@@ -162,7 +162,7 @@ A comprehensive list of 100 cybersecurity projects organized by difficulty level
 | Level 1 | 11 | 11 | 100% |
 | Level 2 | 20 | 20 | 100% |
 | Level 3 | 14 | 14 | 100% |
-| Level 4 | 10 | 26 | 35% |
+| Level 4 | 11 | 26 | 37% |
 | Level 5 | 0 | 30 | 0% |
 
 
