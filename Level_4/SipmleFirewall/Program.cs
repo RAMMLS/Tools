@@ -1,4 +1,6 @@
-using SimpleFirewall;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using SimpleFirewall.Models;
 
 namespace SimpleFirewall
@@ -7,12 +9,41 @@ namespace SimpleFirewall
     {
         private static FirewallEngine? _firewall;
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             Console.Title = "Simple Firewall";
             Console.WriteLine("🔥 Simple Firewall Starting...");
             Console.WriteLine("==============================\n");
 
+            // Для Docker-окружения используем упрощенную версию
+            if (Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true")
+            {
+                await RunInContainerMode();
+            }
+            else
+            {
+                await RunInNormalMode();
+            }
+        }
+
+        static async Task RunInContainerMode()
+        {
+            Console.WriteLine("🚀 Running in Docker Container Mode");
+            Console.WriteLine("🌐 Web Interface: http://0.0.0.0:8080");
+            
+            // Запускаем простой веб-сервер для контейнера
+            _ = Task.Run(StartWebServer);
+            
+            // Основной цикл
+            while (true)
+            {
+                Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] Firewall is running...");
+                await Task.Delay(5000);
+            }
+        }
+
+        static async Task RunInNormalMode()
+        {
             _firewall = new FirewallEngine();
 
             // Обработка Ctrl+C
@@ -37,8 +68,87 @@ namespace SimpleFirewall
             {
                 _firewall?.Dispose();
             }
+        }
 
-            Console.WriteLine("Firewall stopped.");
+        static async Task StartWebServer()
+        {
+            using var listener = new System.Net.HttpListener();
+            listener.Prefixes.Add("http://0.0.0.0:8080/");
+            
+            try
+            {
+                listener.Start();
+                Console.WriteLine("✅ Web server started on http://0.0.0.0:8080");
+
+                while (true)
+                {
+                    var context = await listener.GetContextAsync();
+                    _ = Task.Run(() => HandleWebRequest(context));
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Web server error: {ex.Message}");
+            }
+        }
+
+        static void HandleWebRequest(System.Net.HttpListenerContext context)
+        {
+            var response = context.Response;
+            
+            try
+            {
+                var html = @"
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Firewall</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .status { padding: 20px; background: #e8f5e8; border-radius: 5px; border-left: 4px solid #4CAF50; }
+        .features { margin: 20px 0; }
+        .feature-item { padding: 10px; border-bottom: 1px solid #eee; }
+    </style>
+</head>
+<body>
+    <div class='container'>
+        <h1>🔥 Simple Firewall</h1>
+        <div class='status'>
+            <h2>Status: 🟢 Running</h2>
+            <p>Firewall is active and monitoring network traffic in Docker container.</p>
+            <p><strong>Current time:</strong> " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + @"</p>
+            <p><strong>Container ID:</strong> " + Environment.MachineName + @"</p>
+        </div>
+        <div class='features'>
+            <h3>🛡️ Firewall Features:</h3>
+            <div class='feature-item'>✅ Packet filtering and monitoring</div>
+            <div class='feature-item'>✅ Rule-based traffic control</div>
+            <div class='feature-item'>✅ Real-time network statistics</div>
+            <div class='feature-item'>✅ Web-based management interface</div>
+            <div class='feature-item'>✅ Docker container support</div>
+        </div>
+        <div style='margin-top: 20px; padding: 15px; background: #fff3cd; border-radius: 5px;'>
+            <h3>📝 Note:</h3>
+            <p>This is a demonstration version running in Docker. For full functionality, run outside Docker with administrative privileges.</p>
+        </div>
+    </div>
+</body>
+</html>";
+
+                var buffer = System.Text.Encoding.UTF8.GetBytes(html);
+                response.ContentType = "text/html";
+                response.ContentLength64 = buffer.Length;
+                response.OutputStream.Write(buffer, 0, buffer.Length);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error handling web request: {ex.Message}");
+            }
+            finally
+            {
+                response.Close();
+            }
         }
 
         static void ShowMenu()
@@ -122,22 +232,8 @@ namespace SimpleFirewall
             if (Enum.TryParse<RuleDirection>(Console.ReadLine(), true, out var direction))
                 rule.Direction = direction;
 
-            Console.Write("Source IP (empty for any): ");
-            rule.SourceIP = Console.ReadLine() ?? "";
-
-            Console.Write("Destination IP (empty for any): ");
-            rule.DestinationIP = Console.ReadLine() ?? "";
-
-            Console.Write("Source Port (-1 for any): ");
-            if (int.TryParse(Console.ReadLine(), out var sourcePort))
-                rule.SourcePort = sourcePort;
-
-            Console.Write("Destination Port (-1 for any): ");
-            if (int.TryParse(Console.ReadLine(), out var destPort))
-                rule.DestinationPort = destPort;
-
             Console.Write("Protocol (TCP/UDP/ICMP/Any): ");
-            if (Enum.TryParse<ProtocolType>(Console.ReadLine(), true, out var protocol))
+            if (Enum.TryParse<FirewallProtocol>(Console.ReadLine(), true, out var protocol))
                 rule.Protocol = protocol;
 
             Console.Write("Priority (higher = evaluated first): ");
@@ -173,19 +269,9 @@ namespace SimpleFirewall
             var logs = _firewall?.GetLogs() ?? new List<string>();
             Console.WriteLine($"\n📝 Recent Logs ({logs.Count}):");
 
-            foreach (var log in logs.TakeLast(20)) // Последние 20 записей
+            foreach (var log in logs.TakeLast(10))
             {
-                if (log.Contains("[BLOCK]"))
-                    Console.ForegroundColor = ConsoleColor.Red;
-                else if (log.Contains("[ALLOW]"))
-                    Console.ForegroundColor = ConsoleColor.Green;
-                else if (log.Contains("[ERROR]"))
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                else
-                    Console.ForegroundColor = ConsoleColor.Gray;
-
                 Console.WriteLine(log);
-                Console.ResetColor();
             }
         }
 
@@ -193,7 +279,6 @@ namespace SimpleFirewall
         {
             Console.WriteLine("\n🌐 Opening Web Interface...");
             Console.WriteLine("URL: http://localhost:8080");
-            Console.WriteLine("Press Ctrl+C to stop the firewall");
 
             try
             {

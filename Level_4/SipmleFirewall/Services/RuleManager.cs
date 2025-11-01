@@ -100,7 +100,7 @@ namespace SimpleFirewall.Services
                 {
                     IRule compiledRule = rule.Protocol switch
                     {
-                        ProtocolType.TCP or ProtocolType.UDP or ProtocolType.ICMP =>
+                        FirewallProtocol.TCP or FirewallProtocol.UDP or FirewallProtocol.ICMP =>
                             new ProtocolRule
                             {
                                 Name = rule.Name,
@@ -147,7 +147,7 @@ namespace SimpleFirewall.Services
                     Action = RuleAction.Block,
                     Direction = RuleDirection.Inbound,
                     DestinationPort = port,
-                    Protocol = ProtocolType.Any,
+                    Protocol = FirewallProtocol.Any,
                     Priority = 1000
                 });
             }
@@ -163,10 +163,20 @@ namespace SimpleFirewall.Services
                     Action = RuleAction.Allow,
                     Direction = RuleDirection.Outbound,
                     DestinationPort = port,
-                    Protocol = ProtocolType.Any,
+                    Protocol = FirewallProtocol.Any,
                     Priority = 10
                 });
             }
+
+            // Правило по умолчанию - разрешить весь трафик
+            AddRule(new FirewallRule
+            {
+                Name = "Default Allow",
+                Description = "Allow all traffic by default",
+                Action = RuleAction.Allow,
+                Direction = RuleDirection.Both,
+                Priority = 1
+            });
         }
     }
 }

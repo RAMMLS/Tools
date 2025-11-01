@@ -5,31 +5,13 @@ services:
     build: .
     container_name: simple-firewall
     ports:
-      - "8080:8080"  # Веб-интерфейс
+      - "8080:8080"
     volumes:
       - ./firewall-logs:/app/logs
-      - ./firewall-rules:/app/rules
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - DOTNET_RUNNING_IN_CONTAINER=true
-    cap_add:
-      - NET_ADMIN
-      - NET_RAW
-    privileged: true
     restart: unless-stopped
-    networks:
-      - firewall-network
-
-  # Тестовый контейнер для проверки работы файрволла
-  test-client:
-    image: alpine
-    container_name: firewall-test-client
-    command: ["sh", "-c", "while true; do sleep 30; done"]
-    depends_on:
-      - simple-firewall
-    networks:
-      - firewall-network
 
 networks:
-  firewall-network:
+  default:
     driver: bridge

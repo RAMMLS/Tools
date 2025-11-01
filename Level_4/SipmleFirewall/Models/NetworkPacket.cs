@@ -8,7 +8,7 @@ namespace SimpleFirewall.Models
         public IPAddress DestinationAddress { get; set; } = IPAddress.Any;
         public int SourcePort { get; set; }
         public int DestinationPort { get; set; }
-        public ProtocolType Protocol { get; set; }
+        public FirewallProtocol Protocol { get; set; }
         public RuleDirection Direction { get; set; }
         public DateTime Timestamp { get; set; } = DateTime.Now;
         public long Size { get; set; }
@@ -17,22 +17,18 @@ namespace SimpleFirewall.Models
 
         public bool IsMatch(FirewallRule rule)
         {
-            // Проверка направления
             if (rule.Direction != RuleDirection.Both && rule.Direction != Direction)
                 return false;
 
-            // Проверка протокола
-            if (rule.Protocol != ProtocolType.Any && rule.Protocol != Protocol)
+            if (rule.Protocol != FirewallProtocol.Any && rule.Protocol != Protocol)
                 return false;
 
-            // Проверка IP адресов
             if (!string.IsNullOrEmpty(rule.SourceIP) && !IsIPMatch(SourceAddress, rule.SourceIP))
                 return false;
 
             if (!string.IsNullOrEmpty(rule.DestinationIP) && !IsIPMatch(DestinationAddress, rule.DestinationIP))
                 return false;
 
-            // Проверка портов
             if (rule.SourcePort != -1 && rule.SourcePort != SourcePort)
                 return false;
 
@@ -46,7 +42,6 @@ namespace SimpleFirewall.Models
         {
             if (ruleIP.Contains('/'))
             {
-                // CIDR notation
                 var parts = ruleIP.Split('/');
                 if (parts.Length == 2 && IPAddress.TryParse(parts[0], out var networkIP) && int.TryParse(parts[1], out var maskBits))
                 {
@@ -55,7 +50,6 @@ namespace SimpleFirewall.Models
             }
             else if (ruleIP.Contains('-'))
             {
-                // IP range
                 var parts = ruleIP.Split('-');
                 if (parts.Length == 2 && IPAddress.TryParse(parts[0], out var startIP) && IPAddress.TryParse(parts[1], out var endIP))
                 {
@@ -64,7 +58,6 @@ namespace SimpleFirewall.Models
             }
             else
             {
-                // Single IP
                 return IPAddress.TryParse(ruleIP, out var singleIP) && packetIP.Equals(singleIP);
             }
 
@@ -73,7 +66,6 @@ namespace SimpleFirewall.Models
 
         private bool IsInRange(IPAddress ip, IPAddress network, int maskBits)
         {
-            // Simplified CIDR check
             var ipBytes = ip.GetAddressBytes();
             var networkBytes = network.GetAddressBytes();
             

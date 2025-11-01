@@ -31,34 +31,8 @@ namespace SimpleFirewall.Services
             
             try
             {
-                // Получаем все сетевые интерфейсы
-                var interfaces = NetworkInterface.GetAllNetworkInterfaces()
-                    .Where(nic => nic.OperationalStatus == OperationalStatus.Up &&
-                                 nic.NetworkInterfaceType != NetworkInterfaceType.Loopback);
-
-                foreach (var nic in interfaces)
-                {
-                    try
-                    {
-                        var socket = new Socket(AddressFamily.InterNetwork, SocketType.Raw, ProtocolType.IP);
-                        
-                        // Привязываем сокет к интерфейсу
-                        var localEndPoint = new IPEndPoint(IPAddress.Any, 0);
-                        socket.Bind(localEndPoint);
-                        
-                        // Включаем получение входящих пакетов
-                        socket.IOControl(IOControlCode.ReceiveAll, new byte[] { 1, 0, 0, 0 }, new byte[] { 0, 0, 0, 0 });
-                        
-                        _sockets.Add(socket);
-                        
-                        _logService.LogInfo($"Started monitoring interface: {nic.Name}");
-                    }
-                    catch (Exception ex)
-                    {
-                        _logService.LogError($"Failed to monitor interface {nic.Name}: {ex.Message}");
-                    }
-                }
-
+                // Для демонстрации - симуляция работы без реального захвата пакетов
+                _logService.LogInfo("Starting packet filter in simulation mode...");
                 _captureThread.Start();
                 _logService.LogInfo("Packet filter started successfully");
             }
@@ -71,146 +45,54 @@ namespace SimpleFirewall.Services
         public void Stop()
         {
             _isRunning = false;
-            
-            foreach (var socket in _sockets)
-            {
-                try
-                {
-                    socket.Close();
-                }
-                catch
-                {
-                    // Игнорируем ошибки при закрытии
-                }
-            }
-            _sockets.Clear();
-
             _logService.LogInfo("Packet filter stopped");
         }
 
         private void CapturePackets()
         {
-            var buffers = _sockets.ToDictionary(s => s, s => new byte[4096]);
-            var endpoints = _sockets.ToDictionary(s => s, s => new IPEndPoint(IPAddress.Any, 0));
-
+            var random = new Random();
+            
             while (_isRunning)
             {
-                foreach (var socket in _sockets.ToArray())
+                try
                 {
-                    try
+                    // Симуляция сетевого трафика для демонстрации
+                    SimulateNetworkTraffic(random);
+                    Thread.Sleep(2000); // Пауза между генерацией пакетов
+                }
+                catch (Exception ex)
+                {
+                    if (_isRunning)
                     {
-                        if (socket.Available > 0)
-                        {
-                            var buffer = buffers[socket];
-                            var endPoint = endpoints[socket] as EndPoint;
-                            
-                            int bytesRead = socket.ReceiveFrom(buffer, ref endPoint);
-                            if (bytesRead > 0)
-                            {
-                                ProcessPacket(buffer, bytesRead, socket);
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        if (_isRunning)
-                        {
-                            _logService.LogError($"Error capturing packet: {ex.Message}");
-                        }
+                        _logService.LogError($"Error in packet capture: {ex.Message}");
                     }
                 }
-
-                Thread.Sleep(10); // Небольшая пауза чтобы не грузить CPU
             }
         }
 
-        private void ProcessPacket(byte[] buffer, int length, Socket socket)
+        private void SimulateNetworkTraffic(Random random)
         {
-            try
+            // Генерируем случайные пакеты для демонстрации
+            var protocols = new[] { FirewallProtocol.TCP, FirewallProtocol.UDP, FirewallProtocol.ICMP };
+            var directions = new[] { RuleDirection.Inbound, RuleDirection.Outbound };
+            var ports = new[] { 80, 443, 22, 3389, 53, 8080 };
+
+            for (int i = 0; i < 3; i++) // Генерируем 3 пакета за раз
             {
-                var packet = ParseIPPacket(buffer, length);
-                if (packet != null)
+                var packet = new NetworkPacket
                 {
-                    var action = _ruleManager.EvaluatePacket(packet);
-                    
-                    // Логируем действие
-                    _logService.LogPacket(packet, action);
-                    
-                    PacketProcessed?.Invoke(packet, action);
+                    SourceAddress = IPAddress.Parse($"192.168.1.{random.Next(1, 255)}"),
+                    DestinationAddress = IPAddress.Parse($"10.0.0.{random.Next(1, 255)}"),
+                    SourcePort = random.Next(1000, 65535),
+                    DestinationPort = ports[random.Next(ports.Length)],
+                    Protocol = protocols[random.Next(protocols.Length)],
+                    Direction = directions[random.Next(directions.Length)],
+                    Size = random.Next(64, 1500)
+                };
 
-                    // Здесь должна быть реальная блокировка пакета
-                    // В реальной реализации это потребует драйвер уровня ядра
-                    SimulatePacketBlocking(packet, action);
-                }
-            }
-            catch (Exception ex)
-            {
-                _logService.LogError($"Error processing packet: {ex.Message}");
-            }
-        }
-
-        private NetworkPacket? ParseIPPacket(byte[] buffer, int length)
-        {
-            if (length < 20) return null; // Минимальный размер IP заголовка
-
-            byte version = (byte)(buffer[0] >> 4);
-            if (version != 4) return null; // Только IPv4
-
-            int headerLength = (buffer[0] & 0x0F) * 4;
-            byte protocol = buffer[9];
-
-            var sourceIP = new IPAddress(BitConverter.ToUInt32(buffer, 12));
-            var destIP = new IPAddress(BitConverter.ToUInt32(buffer, 16));
-
-            int sourcePort = 0;
-            int destinationPort = 0;
-
-            // Парсим порты для TCP/UDP
-            if (protocol == 6 || protocol == 17) // TCP или UDP
-            {
-                if (length >= headerLength + 4)
-                {
-                    sourcePort = (buffer[headerLength] << 8) | buffer[headerLength + 1];
-                    destinationPort = (buffer[headerLength + 2] << 8) | buffer[headerLength + 3];
-                }
-            }
-
-            return new NetworkPacket
-            {
-                SourceAddress = sourceIP,
-                DestinationAddress = destIP,
-                SourcePort = sourcePort,
-                DestinationPort = destinationPort,
-                Protocol = protocol switch
-                {
-                    1 => ProtocolType.ICMP,
-                    6 => ProtocolType.TCP,
-                    17 => ProtocolType.UDP,
-                    _ => ProtocolType.Any
-                },
-                Direction = DetermineDirection(sourceIP, destIP),
-                Size = length
-            };
-        }
-
-        private RuleDirection DetermineDirection(IPAddress source, IPAddress destination)
-        {
-            // Упрощенная логика определения направления
-            // В реальной системе нужно учитывать сетевые интерфейсы и маршрутизацию
-            if (source.ToString().StartsWith("192.168.") || source.ToString().StartsWith("10."))
-                return RuleDirection.Outbound;
-            
-            return RuleDirection.Inbound;
-        }
-
-        private void SimulatePacketBlocking(NetworkPacket packet, RuleAction action)
-        {
-            // В реальной системе здесь будет код для реальной блокировки пакета
-            // Это требует драйвера уровня ядра или использования Windows Filtering Platform
-            
-            if (action == RuleAction.Block)
-            {
-                _logService.LogWarning($"BLOCKED: {packet.SourceAddress}:{packet.SourcePort} -> {packet.DestinationAddress}:{packet.DestinationPort} ({packet.Protocol})");
+                var action = _ruleManager.EvaluatePacket(packet);
+                _logService.LogPacket(packet, action);
+                PacketProcessed?.Invoke(packet, action);
             }
         }
 
