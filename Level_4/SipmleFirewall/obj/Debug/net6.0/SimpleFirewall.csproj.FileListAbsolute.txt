@@ -1,0 +1,5 @@
+/home/rammls/Tools/Level_4/SipmleFirewall/obj/Debug/net6.0/SimpleFirewall.GeneratedMSBuildEditorConfig.editorconfig
+/home/rammls/Tools/Level_4/SipmleFirewall/obj/Debug/net6.0/SimpleFirewall.AssemblyInfoInputs.cache
+/home/rammls/Tools/Level_4/SipmleFirewall/obj/Debug/net6.0/SimpleFirewall.AssemblyInfo.cs
+/home/rammls/Tools/Level_4/SipmleFirewall/obj/Debug/net6.0/SimpleFirewall.csproj.CoreCompileInputs.cache
+/home/rammls/Tools/Level_4/SipmleFirewall/obj/Debug/net6.0/SimpleFirewall.sourcelink.json

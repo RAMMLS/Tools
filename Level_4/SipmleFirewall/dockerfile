@@ -1,0 +1,42 @@
+# Multi-stage build для Simple Firewall
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+
+# Копируем файл проекта
+COPY ["SimpleFirewall.csproj", "."]
+RUN dotnet restore "SimpleFirewall.csproj"
+
+# Копируем весь исходный код
+COPY . .
+
+# Собираем и публикуем приложение
+RUN dotnet publish -c Release -o /app/publish
+
+# Финальный образ
+FROM mcr.microsoft.com/dotnet/runtime:6.0
+WORKDIR /app
+
+# Устанавливаем необходимые утилиты для сетевого мониторинга
+RUN apt-get update && apt-get install -y \
+    net-tools \
+    iproute2 \
+    iputils-ping \
+    tcpdump \
+    && rm -rf /var/lib/apt/lists/*
+
+# Создаем пользователя для безопасности
+RUN groupadd -r firewall && useradd -r -g firewall firewalluser
+RUN mkdir -p /app/logs && chown -R firewalluser:firewall /app
+
+# Копируем собранное приложение
+COPY --from=build /app/publish .
+USER firewalluser
+
+# Создаем volume для логов
+VOLUME /app/logs
+
+# Экспортируем порт веб-интерфейса
+EXPOSE 8080
+
+# Точка входа
+ENTRYPOINT ["dotnet", "SimpleFirewall.dll"]
