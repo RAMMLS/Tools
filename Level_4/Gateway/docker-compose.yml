@@ -1,19 +1,10 @@
-version: '3.8'
-
 services:
   gateway:
     build:
       context: .
       dockerfile: Dockerfile.gateway
-    container_name: api-gateway
     ports:
       - "5000:5000"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Production
-      - DOTNET_RUNNING_IN_CONTAINER=true
-    depends_on:
-      - service-a
-      - service-b
     networks:
       - gateway-network
 
@@ -21,9 +12,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.service-a
-    container_name: service-a
-    environment:
-      - ASPNETCORE_URLS=http://0.0.0.0:5001
     networks:
       - gateway-network
 
@@ -31,9 +19,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.service-b
-    container_name: service-b
-    environment:
-      - ASPNETCORE_URLS=http://0.0.0.0:5002
     networks:
       - gateway-network
 

@@ -11,3 +11,5 @@ WORKDIR /app
 COPY --from=build /app/publish .
 EXPOSE 5002
 ENTRYPOINT ["dotnet", "ServiceB.dll"]
+
+

@@ -1,10 +1,13 @@
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 
-# Копируем и собираем Service A
-COPY ["service-a/Program.cs", "service-a/"]
-RUN dotnet new webapi -n ServiceA --force
-RUN dotnet publish -c Release -o /app/publish
+# Копируем файлы проекта
+COPY service-a/ServiceA.csproj .
+COPY service-a/Program.cs .
+
+# Восстанавливаем и публикуем
+RUN dotnet restore ServiceA.csproj
+RUN dotnet publish ServiceA.csproj -c Release -o /app/publish
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR /app

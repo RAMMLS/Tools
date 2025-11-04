@@ -1,30 +1,16 @@
-# Multi-stage build для Gateway
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 
-# Копируем файл проекта
-COPY ["gateway/Gateway.csproj", "gateway/"]
-RUN dotnet restore "gateway/Gateway.csproj"
+# Копируем файлы проекта
+COPY gateway/Gateway.csproj .
+COPY gateway/Program.cs .
 
-# Копируем весь исходный код
-COPY . .
+# Восстанавливаем и публикуем
+RUN dotnet restore Gateway.csproj
+RUN dotnet publish Gateway.csproj -c Release -o /app/publish
 
-# Собираем и публикуем Gateway
-WORKDIR "/src/gateway"
-RUN dotnet publish -c Release -o /app/publish
-
-# Финальный образ
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR /app
-
-# Копируем собранное приложение
 COPY --from=build /app/publish .
-
-# Создаем папку для конфигурации
-RUN mkdir -p /app/config
-
-# Экспортируем порт
 EXPOSE 5000
-
-# Точка входа
 ENTRYPOINT ["dotnet", "Gateway.dll"]
