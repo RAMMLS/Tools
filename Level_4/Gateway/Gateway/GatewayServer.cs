@@ -1,11 +1,11 @@
-using Gateway.Middleware;
 using Gateway.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using System;
+using System.Threading.Tasks;
 
 namespace Gateway
 {
@@ -26,16 +26,9 @@ namespace Gateway
                     {
                         services.AddSingleton<RouteManager>();
                         services.AddSingleton<ServiceDiscovery>();
-                        services.AddSingleton<ILogger<LoggingMiddleware>, Logger<LoggingMiddleware>>();
                     });
                     webBuilder.Configure(app =>
                     {
-                        // Middleware pipeline
-                        app.UseMiddleware<LoggingMiddleware>();
-                        app.UseMiddleware<RateLimitingMiddleware>();
-                        app.UseMiddleware<AuthenticationMiddleware>();
-                        app.UseMiddleware<RoutingMiddleware>();
-
                         // Health check endpoint
                         app.Map("/health", healthApp =>
                         {
@@ -52,11 +45,35 @@ namespace Gateway
                             adminApp.Run(async context =>
                             {
                                 var routeManager = context.RequestServices.GetService<RouteManager>();
-                                var routes = routeManager?.GetAllRoutes() ?? new List<RouteConfig>();
+                                var routes = routeManager?.GetAllRoutes() ?? new System.Collections.Generic.List<Models.RouteConfig>();
                                 
                                 context.Response.ContentType = "application/json";
                                 await context.Response.WriteAsync(System.Text.Json.JsonSerializer.Serialize(routes));
                             });
+                        });
+
+                        // Simple routing for demo
+                        app.Run(async context =>
+                        {
+                            var routeManager = context.RequestServices.GetService<RouteManager>();
+                            var path = context.Request.Path;
+                            var method = context.Request.Method;
+
+                            context.Response.ContentType = "application/json";
+                            
+                            if (path == "/api/users")
+                            {
+                                await context.Response.WriteAsync($"{{\"message\": \"Users from Gateway\", \"gateway\": \"Docker\", \"timestamp\": \"{DateTime.Now:yyyy-MM-dd HH:mm:ss}\"}}");
+                            }
+                            else if (path == "/api/products")
+                            {
+                                await context.Response.WriteAsync($"{{\"message\": \"Products from Gateway\", \"gateway\": \"Docker\", \"timestamp\": \"{DateTime.Now:yyyy-MM-dd HH:mm:ss}\"}}");
+                            }
+                            else
+                            {
+                                context.Response.StatusCode = 404;
+                                await context.Response.WriteAsync($"{{\"error\": \"Route not found: {path}\", \"gateway\": \"Docker\"}}");
+                            }
                         });
                     });
                 })
@@ -66,13 +83,13 @@ namespace Gateway
         public async Task StartAsync()
         {
             await _host.StartAsync();
-            Console.WriteLine($"Gateway server started on port {_port}");
+            Console.WriteLine($"✅ Gateway server started on port {_port}");
         }
 
         public async Task StopAsync()
         {
             await _host.StopAsync();
-            Console.WriteLine("Gateway server stopped");
+            Console.WriteLine("🛑 Gateway server stopped");
         }
     }
 }

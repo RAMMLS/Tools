@@ -1,0 +1,13 @@
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+
+# Копируем и собираем Service B
+COPY ["service-b/Program.cs", "service-b/"]
+RUN dotnet new webapi -n ServiceB --force
+RUN dotnet publish -c Release -o /app/publish
+
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
+WORKDIR /app
+COPY --from=build /app/publish .
+EXPOSE 5002
+ENTRYPOINT ["dotnet", "ServiceB.dll"]
