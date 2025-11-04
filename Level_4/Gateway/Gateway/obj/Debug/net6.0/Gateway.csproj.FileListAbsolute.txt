@@ -1,0 +1,6 @@
+/home/rammls/Tools/Level_4/Gateway/Gateway/obj/Debug/net6.0/Gateway.csproj.AssemblyReference.cache
+/home/rammls/Tools/Level_4/Gateway/Gateway/obj/Debug/net6.0/Gateway.GeneratedMSBuildEditorConfig.editorconfig
+/home/rammls/Tools/Level_4/Gateway/Gateway/obj/Debug/net6.0/Gateway.AssemblyInfoInputs.cache
+/home/rammls/Tools/Level_4/Gateway/Gateway/obj/Debug/net6.0/Gateway.AssemblyInfo.cs
+/home/rammls/Tools/Level_4/Gateway/Gateway/obj/Debug/net6.0/Gateway.csproj.CoreCompileInputs.cache
+/home/rammls/Tools/Level_4/Gateway/Gateway/obj/Debug/net6.0/Gateway.sourcelink.json
