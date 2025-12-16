@@ -1,11 +1,42 @@
 version: '3.8'
+
 services:
-  payload-generator:
+  generator:
+    image: payload-generator
     build: .
     volumes:
       - ./output:/app/output
+      - ./logs:/app/logs
     environment:
-      - DOTNET_ENVIRONMENT=Development
-    command: ["--type", "Discovery", "--validate"]
-    stdin_open: true
-    tty: true
+      - DOTNET_ENVIRONMENT=Production
+      - LOG_LEVEL=Information
+    command: ["--type", "SecurityAudit", "--validate"]
+    networks:
+      - payload-network
+    restart: unless-stopped
+
+  tester:
+    image: mcr.microsoft.com/powershell:lts-nanoserver-1809
+    depends_on:
+      - generator
+    volumes:
+      - ./tests:/tests
+    networks:
+      - payload-network
+    command: ["pwsh", "-c", "Write-Host 'Test environment ready'"]
+    restart: "no"
+
+  monitor:
+    image: redis:alpine
+    networks:
+      - payload-network
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+
+volumes:
+  redis-data:
+
+networks:
+  payload-network:
+    driver: bridge

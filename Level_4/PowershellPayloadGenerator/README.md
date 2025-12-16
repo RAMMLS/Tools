@@ -15,3 +15,12 @@
 ## Использование
 ```bash
 dotnet run -- --type ReverseShell --ip 192.168.1.100 --port 443 --encode
+
+
+# Сначала соберите проект локально
+cd src/PowerShellPayloadGenerator
+dotnet restore
+dotnet build
+
+# Если успешно, попробуйте Docker
+docker build -t payload-generator .

@@ -1,0 +1,24 @@
+FROM mcr.microsoft.com/dotnet/sdk:6.0
+
+# Установка дополнительных инструментов
+RUN apt-get update && apt-get install -y \
+    curl \
+    git \
+    vim \
+    powershell \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Копирование всего проекта
+COPY . .
+
+# Восстановление зависимостей
+RUN dotnet restore src/PowerShellPayloadGenerator/PowerShellPayloadGenerator.csproj
+
+# Настройка среды разработки
+ENV DOTNET_USE_POLLING_FILE_WATCHER=1
+ENV ASPNETCORE_ENVIRONMENT=Development
+
+# Точка входа для разработки
+ENTRYPOINT ["dotnet", "watch", "--project", "src/PowerShellPayloadGenerator", "run", "--"]
