@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  generator:
+    environment:
+      - LOG_LEVEL=Debug
+      - MAX_PAYLOAD_SIZE=1048576
+      - ENABLE_AUDIT=true
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "dotnet", "PowerShellPayloadGenerator.dll", "--type", "Command", "--command", "'Get-Date'"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
