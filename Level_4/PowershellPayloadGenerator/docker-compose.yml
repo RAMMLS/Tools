@@ -1,41 +1,35 @@
-version: '3.8'
-
 services:
   generator:
-    image: payload-generator
+    image: payload-generator:latest
     build: .
+    container_name: payload-generator
     volumes:
       - ./output:/app/output
-      - ./logs:/app/logs
     environment:
       - DOTNET_ENVIRONMENT=Production
-      - LOG_LEVEL=Information
     command: ["--type", "SecurityAudit", "--validate"]
     networks:
       - payload-network
     restart: unless-stopped
 
+  # Заменяем Windows-образ PowerShell на Linux-версию
   tester:
-    image: mcr.microsoft.com/powershell:lts-nanoserver-1809
+    image: mcr.microsoft.com/powershell:latest
     depends_on:
       - generator
     volumes:
       - ./tests:/tests
     networks:
       - payload-network
-    command: ["pwsh", "-c", "Write-Host 'Test environment ready'"]
+    command: ["pwsh", "-c", "Write-Host 'PowerShell test environment is ready'"]
     restart: "no"
 
+  # Убираем Redis, если он не нужен для демо, или оставляем
   monitor:
     image: redis:alpine
     networks:
       - payload-network
-    volumes:
-      - redis-data:/data
     restart: unless-stopped
-
-volumes:
-  redis-data:
 
 networks:
   payload-network:
