@@ -1,8 +1,17 @@
+# PowerShell Payload Generator
 
-i wanna have a rest
-#i wanna have a rest for a hackaton in Saint Petersburg'
+ОБРАЗОВАТЕЛЬНЫЙ ПРОЕКТ - ТОЛЬКО ДЛЯ ЗАКОННОГО ИСПОЛЬЗОВАНИЯ
 
-## I will commit something later 
+## Описание
+Проект демонстрирует принципы создания защищенных PowerShell скриптов для:
+- Автоматизации задач безопасности
+- Пентестинга в контролируемых средах
+- Образовательных целей
 
-###just wait)
->>>>>>> origin/main
+## Требования
+- .NET 6.0+
+- Docker (опционально)
+
+## Использование
+```bash
+dotnet run -- --type ReverseShell --ip 192.168.1.100 --port 443 --encode
