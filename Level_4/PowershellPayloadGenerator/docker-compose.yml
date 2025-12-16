@@ -1,11 +1,11 @@
 version: '3.8'
 services:
   payload-generator:
-    build:
-      context: .
-      dockerfile: docker/Dockerfile
+    build: .
     volumes:
       - ./output:/app/output
     environment:
       - DOTNET_ENVIRONMENT=Development
-    command: ["--type", "Command", "--validate"]
+    command: ["--type", "Discovery", "--validate"]
+    stdin_open: true
+    tty: true

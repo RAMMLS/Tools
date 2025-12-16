@@ -1,0 +1,15 @@
+/home/rammls/Tools/Level_4/PowershellPayloadGenerator/src/PowerShellPayloadGenerator/bin/Debug/net6.0/PowerShellPayloadGenerator
+/home/rammls/Tools/Level_4/PowershellPayloadGenerator/src/PowerShellPayloadGenerator/bin/Debug/net6.0/PowerShellPayloadGenerator.deps.json
+/home/rammls/Tools/Level_4/PowershellPayloadGenerator/src/PowerShellPayloadGenerator/bin/Debug/net6.0/PowerShellPayloadGenerator.runtimeconfig.json
+/home/rammls/Tools/Level_4/PowershellPayloadGenerator/src/PowerShellPayloadGenerator/bin/Debug/net6.0/PowerShellPayloadGenerator.dll
+/home/rammls/Tools/Level_4/PowershellPayloadGenerator/src/PowerShellPayloadGenerator/bin/Debug/net6.0/PowerShellPayloadGenerator.pdb
+/home/rammls/Tools/Level_4/PowershellPayloadGenerator/src/PowerShellPayloadGenerator/obj/Debug/net6.0/PowerShellPayloadGenerator.GeneratedMSBuildEditorConfig.editorconfig
+/home/rammls/Tools/Level_4/PowershellPayloadGenerator/src/PowerShellPayloadGenerator/obj/Debug/net6.0/PowerShellPayloadGenerator.AssemblyInfoInputs.cache
+/home/rammls/Tools/Level_4/PowershellPayloadGenerator/src/PowerShellPayloadGenerator/obj/Debug/net6.0/PowerShellPayloadGenerator.AssemblyInfo.cs
+/home/rammls/Tools/Level_4/PowershellPayloadGenerator/src/PowerShellPayloadGenerator/obj/Debug/net6.0/PowerShellPayloadGenerator.csproj.CoreCompileInputs.cache
+/home/rammls/Tools/Level_4/PowershellPayloadGenerator/src/PowerShellPayloadGenerator/obj/Debug/net6.0/PowerShellPayloadGenerator.sourcelink.json
+/home/rammls/Tools/Level_4/PowershellPayloadGenerator/src/PowerShellPayloadGenerator/obj/Debug/net6.0/PowerShellPayloadGenerator.dll
+/home/rammls/Tools/Level_4/PowershellPayloadGenerator/src/PowerShellPayloadGenerator/obj/Debug/net6.0/refint/PowerShellPayloadGenerator.dll
+/home/rammls/Tools/Level_4/PowershellPayloadGenerator/src/PowerShellPayloadGenerator/obj/Debug/net6.0/PowerShellPayloadGenerator.pdb
+/home/rammls/Tools/Level_4/PowershellPayloadGenerator/src/PowerShellPayloadGenerator/obj/Debug/net6.0/PowerShellPayloadGenerator.genruntimeconfig.cache
+/home/rammls/Tools/Level_4/PowershellPayloadGenerator/src/PowerShellPayloadGenerator/obj/Debug/net6.0/ref/PowerShellPayloadGenerator.dll

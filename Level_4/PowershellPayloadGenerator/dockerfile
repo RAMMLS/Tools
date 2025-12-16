@@ -1,0 +1,48 @@
+FROM mcr.microsoft.com/dotnet/sdk:6.0
+
+WORKDIR /app
+COPY . .
+
+# Создаем недостающие файлы
+RUN mkdir -p src/PowerShellPayloadGenerator/Utilities && \
+    cat > src/PowerShellPayloadGenerator/Utilities/SecurityHelper.cs << 'EOF'
+using System;
+using System.Text;
+using System.Security.Cryptography;
+
+namespace PowerShellPayloadGenerator.Utilities
+{
+    public static class SecurityHelper
+    {
+        public static string EncodeBase64(string input)
+        {
+            if (string.IsNullOrEmpty(input)) return "";
+            var bytes = Encoding.UTF8.GetBytes(input);
+            return Convert.ToBase64String(bytes);
+        }
+        
+        public static string CalculateSha256Hash(string input)
+        {
+            if (string.IsNullOrEmpty(input)) return "";
+            using (var sha256 = SHA256.Create())
+            {
+                var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(input));
+                var builder = new StringBuilder();
+                foreach (var b in bytes) builder.Append(b.ToString("x2"));
+                return builder.ToString();
+            }
+        }
+        
+        public static string ObfuscatePowerShell(string script)
+        {
+            return script;
+        }
+    }
+}
+EOF
+
+WORKDIR /app/src/PowerShellPayloadGenerator
+RUN dotnet restore
+RUN dotnet build -c Release -o /app/output
+
+ENTRYPOINT ["dotnet", "/app/output/PowerShellPayloadGenerator.dll"]
