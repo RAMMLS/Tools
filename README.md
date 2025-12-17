@@ -98,7 +98,7 @@ A comprehensive list of 100 cybersecurity projects organized by difficulty level
 | 55 | Full chat server with private messages and file transfer | ✅ |
 | 56 | Simple firewall | ✅ |
 | 57 | Gateway | ✅ |
-| 58 | Powershell payload generator | ❌ |
+| 58 | Powershell payload generator | ✅ |
 | 59 | Bash payload generator | ❌ |
 | 60 | Subdomain enumerator | ❌ |
 | 61 | DNS Enumerator | ❌ |
