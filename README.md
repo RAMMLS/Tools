@@ -112,7 +112,7 @@ A comprehensive list of 100 cybersecurity projects organized by difficulty level
 | 69 | Process monitor (Windows and Linux) | ❌ |
 | 70 | Windows token privilege escalation tool | ❌ |
 
-**Progress**: 12/26 (37%)
+**Progress**: 13/26 (39%)
 
 ---
 
