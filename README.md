@@ -162,7 +162,7 @@ A comprehensive list of 100 cybersecurity projects organized by difficulty level
 | Level 1 | 11 | 11 | 100% |
 | Level 2 | 20 | 20 | 100% |
 | Level 3 | 14 | 14 | 100% |
-| Level 4 | 12 | 26 | 38% |
+| Level 4 | 13 | 26 | 39% |
 | Level 5 | 0 | 30 | 0% |
 
 
